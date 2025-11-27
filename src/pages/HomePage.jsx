@@ -10,7 +10,7 @@ function HomePage() {
         const response = await api.get("/cursos");
         setCursos(response.data);
       } catch (err) {
-        console.error("Erro ao carregar cursos", err);
+        console.error("Erro ao carregar cursos!", err);
       }
     }
 
