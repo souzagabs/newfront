@@ -20,7 +20,7 @@ function Register() {
       });
 
       if (response.data && response.data.message === "Usuário criado com sucesso") {
-        navigate("/login"); // Redireciona para a página de login após sucesso
+        navigate("/login"); 
       } else {
         setError("Erro ao registrar usuário.");
       }

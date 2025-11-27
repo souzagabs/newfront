@@ -3,11 +3,10 @@ import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 function CreateCourse() {
-  const [nome, setNome] = useState("");          // Nome do curso
-  const [descricao, setDescricao] = useState(""); // Descrição do curso
-  const [error, setError] = useState("");        // Para mensagens de erro
-  const navigate = useNavigate();                // Para navegação após a criação do curso
-
+  const [nome, setNome] = useState("");          
+  const [descricao, setDescricao] = useState(""); 
+  const [error, setError] = useState("");        
+  const navigate = useNavigate();                
   const handleSubmit = async (e) => {
     e.preventDefault(); // Evitar que o formulário recarregue a página
 
@@ -18,12 +17,12 @@ function CreateCourse() {
         { nome, descricao },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Envia o token no header
+            Authorization: `Bearer ${token}`, r
           },
         }
       );
 
-      // Se tudo correr bem, redireciona o instrutor para a home
+      
       navigate("/home");
     } catch (err) {
       setError("Erro ao criar curso. Tente novamente.");
