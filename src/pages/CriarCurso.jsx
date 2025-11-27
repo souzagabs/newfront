@@ -1,32 +1,58 @@
 import { useState } from "react";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import Modal from "react-modal";
 
-function CreateCourse() {
-  const [nome, setNome] = useState("");          
-  const [descricao, setDescricao] = useState(""); 
-  const [error, setError] = useState("");        
-  const navigate = useNavigate();                
+// Modal para criar módulo
+function CriarCurso() {
+  const [nome, setNome] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [error, setError] = useState("");
+  const [cursoCriado, setCursoCriado] = useState(null); // Curso criado
+  const [modalIsOpen, setModalIsOpen] = useState(false); // Para abrir/fechar o modal de adicionar módulos
+  const [modulos, setModulos] = useState([]);
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault(); // Evitar que o formulário recarregue a página
 
     try {
-      const token = localStorage.getItem("token"); // Pega o token do localStorage
+      const token = localStorage.getItem("token");
       const response = await api.post(
         "/cursos", // Endpoint para criar o curso
         { nome, descricao },
         {
           headers: {
-            Authorization: `Bearer ${token}`, r
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      
-      navigate("/home");
+      setCursoCriado(response.data); // Definir o curso criado
+      setModalIsOpen(true); // Abrir o modal de adicionar módulos
     } catch (err) {
       setError("Erro ao criar curso. Tente novamente.");
       console.error(err);
+    }
+  };
+
+  const handleAdicionarModulo = async (titulo, tipoConteudo, urlConteudo) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      await api.post(
+        `/modulos/${cursoCriado.id}`, // Endpoint para adicionar módulo ao curso
+        { titulo, tipoConteudo, urlConteudo },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setModulos([...modulos, { titulo, tipoConteudo, urlConteudo }]);
+    } catch (err) {
+      console.error("Erro ao adicionar módulo:", err);
     }
   };
 
@@ -55,8 +81,43 @@ function CreateCourse() {
         </div>
         <button type="submit">Criar Curso</button>
       </form>
+
+      {/* Modal para adicionar módulos */}
+      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
+        <h2>Adicionar Módulos ao Curso</h2>
+        <div>
+          {/* Aqui você pode criar o formulário para adicionar módulos */}
+          <div>
+            <label>Título do Módulo</label>
+            <input type="text" id="moduloTitulo" />
+          </div>
+          <div>
+            <label>Tipo de Conteúdo</label>
+            <select id="moduloTipoConteudo">
+              <option value="Vídeo">Vídeo</option>
+              <option value="Texto">Texto</option>
+            </select>
+          </div>
+          <div>
+            <label>URL do Conteúdo</label>
+            <input type="text" id="moduloUrlConteudo" />
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              const titulo = document.getElementById("moduloTitulo").value;
+              const tipoConteudo = document.getElementById("moduloTipoConteudo").value;
+              const urlConteudo = document.getElementById("moduloUrlConteudo").value;
+              handleAdicionarModulo(titulo, tipoConteudo, urlConteudo);
+            }}
+          >
+            Adicionar Módulo
+          </button>
+        </div>
+        <button onClick={() => setModalIsOpen(false)}>Fechar</button>
+      </Modal>
     </div>
   );
 }
 
-export default CreateCourse;
+export default CriarCurso;
