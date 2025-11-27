@@ -23,7 +23,6 @@ function Login() {
         // Armazena o token no localStorage
         localStorage.setItem("token", response.data.token);
         
-        // Redireciona o usuário para a página "home" após o login
         navigate("/home");
       } else {
         setError("Erro ao processar o login.");

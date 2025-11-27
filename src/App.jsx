@@ -5,6 +5,8 @@ import Register from './pages/Register';
 import HomePage from './pages/HomePage';
 import CreateCourse from './pages/CriarCurso';
 import CreateModule from './pages/CriarModulo';
+import MeusCursos from './pages/MeusCursos';
+import CursoDetalhes from './pages/CursoDetalhes';
 
 function App() {
   return (
@@ -17,7 +19,9 @@ function App() {
         <Route path="/registrar" element={<Register />} />
 
         <Route path="/criarcurso" element={<CreateCourse />} />
-        <Route path="/criar-modulo/:cursoId" element={<CreateModule />} />
+        <Route path="/criarmodulo/:cursoId" element={<CreateModule />} />
+        <Route path="/meuscursos" element={<MeusCursos />} />
+        <Route path="/curso/:cursoId" element={<CursoDetalhes />} />
       </Routes>
     </Router>
   );
