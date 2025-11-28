@@ -3,7 +3,7 @@ import api from "../services/api";
 import { useParams, useNavigate } from "react-router-dom";
 
 function CursoDetalhes() {
-  const { cursoId } = useParams(); // Pega o id do curso da URL
+  const { cursoId } = useParams();
   const [curso, setCurso] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();

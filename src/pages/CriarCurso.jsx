@@ -19,7 +19,7 @@ function CriarCurso() {
     try {
       const token = localStorage.getItem("token");
       const response = await api.post(
-        "/cursos", // Endpoint para criar o curso
+        "/cursos",
         { nome, descricao },
         {
           headers: {
@@ -28,7 +28,7 @@ function CriarCurso() {
         }
       );
 
-      setCursoCriado(response.data); // Definir o curso criado
+      setCursoCriado(response.data); 
       setModalIsOpen(true); // Abrir o modal de adicionar módulos
     } catch (err) {
       setError("Erro ao criar curso. Tente novamente.");
@@ -86,7 +86,7 @@ function CriarCurso() {
       <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
         <h2>Adicionar Módulos ao Curso</h2>
         <div>
-          {/* Aqui você pode criar o formulário para adicionar módulos */}
+          {/* Espaço de criação de formulário para adicionar módulos */}
           <div>
             <label>Título do Módulo</label>
             <input type="text" id="moduloTitulo" />
