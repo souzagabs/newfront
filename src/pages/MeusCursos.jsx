@@ -18,7 +18,6 @@ function MeusCursos() {
           return;
         }
 
-        // Decodificar o token para pegar o papel do usuário
         const decodedToken = JSON.parse(atob(token.split(".")[1]));
         setRole(decodedToken.role);
 
@@ -30,12 +29,23 @@ function MeusCursos() {
 
         console.log("Resposta da API - Meus Cursos:", response.data);
 
-        // Separando os cursos criados pelo instrutor e os cursos em que o aluno está inscrito
-        const cursosDoInstrutor = response.data.filter((curso) => curso.instrutorId === decodedToken.id);
-        const cursosInscritos = response.data.filter((curso) => curso.instrutorId !== decodedToken.id);
+        if (response.data && Array.isArray(response.data)) {
+          if (decodedToken.role === "INSTRUTOR") {
+            // Cursos criados pelo instrutor
+            const cursosDoInstrutor = response.data.filter((curso) => curso.instrutorId === decodedToken.id);
+            setCursosCriados(cursosDoInstrutor);
 
-        setCursos(cursosInscritos);
-        setCursosCriados(cursosDoInstrutor);
+            // Cursos em que o instrutor se inscreveu
+            const cursosInscritos = response.data.filter((curso) => curso.instrutorId !== decodedToken.id);
+            setCursos(cursosInscritos);
+          } else if (decodedToken.role === "ALUNO") {
+            // Alunos só têm acesso aos cursos que estão inscritos
+            const cursosInscritos = response.data.filter((curso) => curso.inscricoes.some((inscricao) => inscricao.userId === decodedToken.id));
+            setCursos(cursosInscritos);
+          }
+        } else {
+          setError("Não foi possível carregar os cursos.");
+        }
 
       } catch (err) {
         console.error("Erro ao carregar cursos!", err);
@@ -54,7 +64,7 @@ function MeusCursos() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCursos(cursos.filter((curso) => curso.id !== cursoId));
-      setCursosCriados(cursosCriados.filter((curso) => curso.id !== cursoId)); // Remover o curso da lista de criados
+      setCursosCriados(cursosCriados.filter((curso) => curso.id !== cursoId));
     } catch (err) {
       console.error("Erro ao excluir curso", err);
       setError("Erro ao excluir o curso.");
@@ -76,7 +86,7 @@ function MeusCursos() {
           <div key={curso.id}>
             <h3>{curso.nome}</h3>
             <p>{curso.descricao}</p>
-            <p>Modulos: {curso.modulos.length}</p>
+            <p>Modulos: {curso.modulos ? curso.modulos.length : 0}</p>
             <button onClick={() => navigate(`/meuscursos/${curso.id}`)}>Ver curso</button>
           </div>
         ))
@@ -92,7 +102,7 @@ function MeusCursos() {
               <div key={curso.id}>
                 <h3>{curso.nome}</h3>
                 <p>{curso.descricao}</p>
-                <p>Modulos: {curso.modulos.length}</p>
+                <p>Modulos: {curso.modulos ? curso.modulos.length : 0}</p>
                 <button onClick={() => navigate(`/meuscursos/${curso.id}`)}>Ver curso</button>
                 <button onClick={() => excluirCurso(curso.id)}>Excluir</button>
               </div>
