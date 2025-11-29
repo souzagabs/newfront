@@ -3,7 +3,7 @@ import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 function MeusCursos() {
-  const [cursos, setCursos] = useState([]); // Cursos em que o usuário está inscrito
+  const [cursos, setCursos] = useState([]); // Cursos que o aluno está inscrito
   const [cursosCriados, setCursosCriados] = useState([]); // Cursos criados pelo instrutor
   const [error, setError] = useState("");
   const [role, setRole] = useState(""); // Armazenar o papel do usuário
@@ -23,6 +23,7 @@ function MeusCursos() {
 
         console.log("Fazendo requisição para /cursos/meuscursos com token:", token);
 
+        // Requisição para buscar os cursos
         const response = await api.get("/cursos/meuscursos", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -30,23 +31,30 @@ function MeusCursos() {
         console.log("Resposta da API - Meus Cursos:", response.data);
 
         if (response.data && Array.isArray(response.data)) {
+          const cursosData = response.data;
+
+          // Para instrutores
           if (decodedToken.role === "INSTRUTOR") {
-            // Cursos criados pelo instrutor
-            const cursosDoInstrutor = response.data.filter((curso) => curso.instrutorId === decodedToken.id);
+            const cursosDoInstrutor = cursosData.filter(curso => curso.instrutorId === decodedToken.id);
+            console.log("Cursos criados pelo instrutor:", cursosDoInstrutor);
             setCursosCriados(cursosDoInstrutor);
 
-            // Cursos em que o instrutor se inscreveu
-            const cursosInscritos = response.data.filter((curso) => curso.instrutorId !== decodedToken.id);
+            const cursosInscritos = cursosData.filter(curso => curso.instrutorId !== decodedToken.id);
+            console.log("Cursos que o instrutor se inscreveu:", cursosInscritos);
             setCursos(cursosInscritos);
-          } else if (decodedToken.role === "ALUNO") {
-            // Alunos só têm acesso aos cursos que estão inscritos
-            const cursosInscritos = response.data.filter((curso) => curso.inscricoes.some((inscricao) => inscricao.userId === decodedToken.id));
+          } 
+          // Para alunos
+          else if (decodedToken.role === "ALUNO") {
+            const cursosInscritos = cursosData.filter(curso => {
+              return curso.inscricoes && curso.inscricoes.some(inscricao => inscricao.userId === decodedToken.id);
+            });
+
+            console.log("Cursos que o aluno se inscreveu:", cursosInscritos);
             setCursos(cursosInscritos);
           }
         } else {
           setError("Não foi possível carregar os cursos.");
         }
-
       } catch (err) {
         console.error("Erro ao carregar cursos!", err);
         setError("Erro ao carregar cursos.");
@@ -64,7 +72,7 @@ function MeusCursos() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCursos(cursos.filter((curso) => curso.id !== cursoId));
-      setCursosCriados(cursosCriados.filter((curso) => curso.id !== cursoId));
+      setCursosCriados(cursosCriados.filter((curso) => curso.id !== cursoId)); // Remover o curso da lista de criados
     } catch (err) {
       console.error("Erro ao excluir curso", err);
       setError("Erro ao excluir o curso.");

@@ -82,7 +82,6 @@ function CriarCurso() {
         <button type="submit">Criar Curso</button>
       </form>
 
-      {/* Modal para adicionar módulos */}
       <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
         <h2>Adicionar Módulos ao Curso</h2>
         <div>
