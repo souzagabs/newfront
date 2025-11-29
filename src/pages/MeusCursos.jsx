@@ -3,8 +3,10 @@ import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 function MeusCursos() {
-  const [cursos, setCursos] = useState([]);
+  const [cursos, setCursos] = useState([]); // Cursos em que o usuário está inscrito
+  const [cursosCriados, setCursosCriados] = useState([]); // Cursos criados pelo instrutor
   const [error, setError] = useState("");
+  const [role, setRole] = useState(""); // Armazenar o papel do usuário
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,19 +18,25 @@ function MeusCursos() {
           return;
         }
 
+        // Decodificar o token para pegar o papel do usuário
+        const decodedToken = JSON.parse(atob(token.split(".")[1]));
+        setRole(decodedToken.role);
+
         console.log("Fazendo requisição para /cursos/meuscursos com token:", token);
+
         const response = await api.get("/cursos/meuscursos", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log("Resposta da API - Meus Cursos:", response.data); 
-        if (response.data) {
-          setCursos(response.data);
-        } else {
-          setError("Nenhum curso encontrado.");
-        }
+        console.log("Resposta da API - Meus Cursos:", response.data);
+
+        // Separando os cursos criados pelo instrutor e os cursos em que o aluno está inscrito
+        const cursosDoInstrutor = response.data.filter((curso) => curso.instrutorId === decodedToken.id);
+        const cursosInscritos = response.data.filter((curso) => curso.instrutorId !== decodedToken.id);
+
+        setCursos(cursosInscritos);
+        setCursosCriados(cursosDoInstrutor);
+
       } catch (err) {
         console.error("Erro ao carregar cursos!", err);
         setError("Erro ao carregar cursos.");
@@ -43,11 +51,10 @@ function MeusCursos() {
 
     try {
       await api.delete(`/cursos/${cursoId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setCursos(cursos.filter((curso) => curso.id !== cursoId)); 
+      setCursos(cursos.filter((curso) => curso.id !== cursoId));
+      setCursosCriados(cursosCriados.filter((curso) => curso.id !== cursoId)); // Remover o curso da lista de criados
     } catch (err) {
       console.error("Erro ao excluir curso", err);
       setError("Erro ao excluir o curso.");
@@ -59,20 +66,41 @@ function MeusCursos() {
       <h1>Meus Cursos</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <button onClick={() => navigate("/criarcurso")}>Criar Curso</button>
+      {role === "INSTRUTOR" && (
+        <button onClick={() => navigate("/criarcurso")}>Criar Curso</button>
+      )}
 
+      <h2>Cursos que você está inscrito</h2>
       {cursos.length > 0 ? (
         cursos.map((curso) => (
           <div key={curso.id}>
-            <h2>{curso.nome}</h2>
+            <h3>{curso.nome}</h3>
             <p>{curso.descricao}</p>
             <p>Modulos: {curso.modulos.length}</p>
             <button onClick={() => navigate(`/meuscursos/${curso.id}`)}>Ver curso</button>
-            <button onClick={() => excluirCurso(curso.id)}>Excluir</button>
           </div>
         ))
       ) : (
-        <p>Você ainda não tem cursos criados.</p>
+        <p>Você ainda não se inscreveu em nenhum curso.</p>
+      )}
+
+      {role === "INSTRUTOR" && (
+        <>
+          <h2>Cursos Criados por Você</h2>
+          {cursosCriados.length > 0 ? (
+            cursosCriados.map((curso) => (
+              <div key={curso.id}>
+                <h3>{curso.nome}</h3>
+                <p>{curso.descricao}</p>
+                <p>Modulos: {curso.modulos.length}</p>
+                <button onClick={() => navigate(`/meuscursos/${curso.id}`)}>Ver curso</button>
+                <button onClick={() => excluirCurso(curso.id)}>Excluir</button>
+              </div>
+            ))
+          ) : (
+            <p>Você ainda não criou nenhum curso.</p>
+          )}
+        </>
       )}
     </div>
   );
