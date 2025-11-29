@@ -22,6 +22,7 @@ function App() {
         <Route path="/criarmodulo/:cursoId" element={<CreateModule />} />
         <Route path="/meuscursos" element={<MeusCursos />} />
         <Route path="/curso/:cursoId" element={<CursoDetalhes />} />
+        <Route path="/cursos/meuscursos" element={<MeusCursos />} />
       </Routes>
     </Router>
   );
