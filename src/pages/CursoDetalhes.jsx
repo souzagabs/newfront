@@ -5,10 +5,10 @@ import { useParams } from "react-router-dom";
 function CursoDetalhes() {
   const { cursoId } = useParams(); 
   const [curso, setCurso] = useState(null);
-  const [error, setError] = useState("");  // Para mostrar erros, se houver
-  const [message, setMessage] = useState("");  // Para mostrar mensagens de sucesso ou erro
-  const [isSubscribed, setIsSubscribed] = useState(false); // Estado para verificar se já se inscreveu
-  const [loading, setLoading] = useState(false); // Estado para controle de carregamento
+  const [error, setError] = useState("");  
+  const [message, setMessage] = useState("");  
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     async function carregarCurso() {

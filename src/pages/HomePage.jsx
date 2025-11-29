@@ -8,7 +8,6 @@ function HomePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    
     async function carregarCursos() {
       try {
         const response = await api.get("/cursos");
@@ -21,12 +20,14 @@ function HomePage() {
     async function carregarUsuario() {
       try {
         const token = localStorage.getItem("token");
-        const response = await api.get("/usuarios/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUser(response.data);
+        if (token) {
+          const response = await api.get("/usuarios/me", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setUser(response.data);
+        }
       } catch (err) {
         console.error("Erro ao carregar usuário!", err);
       }
@@ -36,27 +37,35 @@ function HomePage() {
     carregarUsuario();
   }, []);
 
-  // Função para lidar com o logout CONSERTARRR
+  // Função para lidar com o logout
   const logout = () => {
     localStorage.removeItem("token");
-    navigate("/login"); 
+    setUser(null);  // Limpa o estado do usuário
+    navigate("/login");
   };
 
   return (
     <div>
       <h1>Cursos Disponíveis</h1>
 
-      {/* Exibir nome do usuário e opção de logout CONSERTARRRR*/}
+      {/* Se o usuário não estiver logado, mostra os botões de Login e Cadastre-se */}
+      {!user && (
+        <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+          <button onClick={() => navigate("/login")}>Login</button>
+          <button onClick={() => navigate("/registrar")} style={{ marginLeft: "10px" }}>Cadastre-se</button>
+        </div>
+      )}
+
+      {/* Se o usuário estiver logado, exibe o nome e o botão de logout */}
       {user && (
         <div style={{ position: "absolute", top: "10px", right: "10px" }}>
-          <span>{user.nome}</span>
+          <span>{user.nome.split(" ")[0]}</span> {/* Exibe o primeiro nome */}
           <button onClick={logout} style={{ marginLeft: "10px" }}>Deslogar</button>
         </div>
       )}
 
       <div>
         <button onClick={() => navigate("/meuscursos")}>Meus Cursos</button>
-        
       </div>
 
       {cursos.map((curso) => (
