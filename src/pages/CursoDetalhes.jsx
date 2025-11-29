@@ -3,14 +3,13 @@ import api from "../services/api";
 import { useParams } from "react-router-dom";
 
 function CursoDetalhes() {
-  const { cursoId } = useParams();  // Obtém o ID do curso da URL
+  const { cursoId } = useParams(); 
   const [curso, setCurso] = useState(null);
   const [error, setError] = useState("");  // Para mostrar erros, se houver
   const [message, setMessage] = useState("");  // Para mostrar mensagens de sucesso ou erro
   const [isSubscribed, setIsSubscribed] = useState(false); // Estado para verificar se já se inscreveu
   const [loading, setLoading] = useState(false); // Estado para controle de carregamento
 
-  // Função para carregar os detalhes do curso
   useEffect(() => {
     async function carregarCurso() {
       try {
@@ -27,11 +26,10 @@ function CursoDetalhes() {
     }
   }, [cursoId]);
 
-  // Função para inscrever o usuário no curso
   const inscreverCurso = async () => {
     if (isSubscribed) {
       setMessage("Você já está inscrito neste curso.");
-      return; // Impede nova inscrição
+      return;
     }
 
     const token = localStorage.getItem("token");
@@ -41,28 +39,26 @@ function CursoDetalhes() {
       return;
     }
 
-    // Decodificando o token para pegar o usuarioId
-    const decodedToken = JSON.parse(atob(token.split('.')[1]));  // Decodificando o JWT
-    const usuarioId = decodedToken.id;  // Pegando o id do usuário decodificado
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    const usuarioId = decodedToken.id;
 
-    // Convertendo o cursoId para inteiro
-    const cursoIdInt = parseInt(cursoId, 10);  // Garantindo que cursoId seja um número inteiro
+    const cursoIdInt = parseInt(cursoId, 10); 
 
-    console.log("Enviando inscrição para o curso:", cursoIdInt, "com o usuário:", usuarioId);  // Logando os dados
+    console.log("Enviando inscrição para o curso:", cursoIdInt, "com o usuário:", usuarioId); 
 
     try {
       setLoading(true); // Inicia o carregamento ao tentar inscrever
 
       const response = await api.post(
         "/cursos/inscricoes",
-        { usuarioId, cursoId: cursoIdInt },  // Enviando o cursoId como número inteiro
+        { usuarioId, cursoId: cursoIdInt },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
       if (response.status === 201) {
-        setMessage("Inscrição realizada com sucesso!");  // Exibe mensagem de sucesso
+        setMessage("Inscrição realizada com sucesso!");
         setIsSubscribed(true); // Marca o usuário como inscrito
       } else {
         setMessage(`Erro inesperado. Código de status: ${response.status}`);
@@ -75,12 +71,10 @@ function CursoDetalhes() {
     }
   };
 
-  // Exibe erros
   if (error) {
     return <div style={{ color: 'red', fontWeight: 'bold' }}>{error}</div>;
   }
 
-  // Exibe mensagem de carregamento enquanto os dados do curso não são carregados
   if (!curso) {
     return <div>Carregando...</div>;
   }
@@ -97,11 +91,9 @@ function CursoDetalhes() {
         ))}
       </ul>
 
-      {/* Exibindo a mensagem de sucesso ou erro */}
       {message && <div style={{ color: 'green', fontWeight: 'bold' }}>{message}</div>}
       {error && <div style={{ color: 'red', fontWeight: 'bold' }}>{error}</div>}
 
-      {/* Botão de inscrição */}
       <button onClick={inscreverCurso} disabled={isSubscribed || loading}>
         {loading ? "Carregando..." : isSubscribed ? "Você já está inscrito" : "Inscrever-se"}
       </button>

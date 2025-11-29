@@ -34,8 +34,8 @@ function MeusCursos() {
         const cursosDoInstrutor = response.data.filter((curso) => curso.instrutorId === decodedToken.id);
         const cursosInscritos = response.data.filter((curso) => curso.instrutorId !== decodedToken.id);
 
-        setCursos(cursosInscritos); // Atualiza os cursos em que o usuário está inscrito
-        setCursosCriados(cursosDoInstrutor); // Atualiza os cursos criados pelo instrutor
+        setCursos(cursosInscritos);
+        setCursosCriados(cursosDoInstrutor);
 
       } catch (err) {
         console.error("Erro ao carregar cursos!", err);
@@ -66,12 +66,10 @@ function MeusCursos() {
       <h1>Meus Cursos</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {/* Mostrar botão de Criar Curso apenas se for instrutor */}
       {role === "INSTRUTOR" && (
         <button onClick={() => navigate("/criarcurso")}>Criar Curso</button>
       )}
 
-      {/* Cursos em que o usuário está inscrito */}
       <h2>Cursos que você está inscrito</h2>
       {cursos.length > 0 ? (
         cursos.map((curso) => (
@@ -86,7 +84,6 @@ function MeusCursos() {
         <p>Você ainda não se inscreveu em nenhum curso.</p>
       )}
 
-      {/* Cursos criados pelo instrutor */}
       {role === "INSTRUTOR" && (
         <>
           <h2>Cursos Criados por Você</h2>
