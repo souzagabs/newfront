@@ -26,7 +26,7 @@ function HomePage() {
               Authorization: `Bearer ${token}`,
             },
           });
-          setUser(response.data);
+          setUser(response.data);  // Armazena os dados do usuário logado
         }
       } catch (err) {
         console.error("Erro ao carregar usuário!", err);
@@ -35,13 +35,12 @@ function HomePage() {
 
     carregarCursos();
     carregarUsuario();
-  }, []);
+  }, []); 
 
-  // Função para lidar com o logout
   const logout = () => {
     localStorage.removeItem("token");
-    setUser(null);  // Limpa o estado do usuário
-    navigate("/login");
+    setUser(null); // Limpa os dados do usuário no estado
+    navigate("/login"); // Redireciona para a página de login
   };
 
   // Função para verificar se o usuário está inscrito no curso
@@ -49,16 +48,19 @@ function HomePage() {
     return user?.inscricoes?.some((inscricao) => inscricao.cursoId === cursoId);
   };
 
-  // Função para redirecionar para o módulo ou para a página de detalhes do curso
+  // Função para redirecionar o usuário
   const handleVerCurso = (cursoId) => {
-    if (isUserInscrito(cursoId)) {
-      // Se o usuário está inscrito, redireciona para o primeiro módulo
-      navigate(`/curso/${cursoId}/modulo/1`);
-    } else {
-      // Se o usuário não está inscrito, vai para a página de detalhes do curso
-      navigate(`/curso/${cursoId}`);
-    }
-  };
+  console.log("Curso ID: ", cursoId); // Verificando qual curso foi clicado
+  if (isUserInscrito(cursoId)) {
+
+    console.log("Usuário já inscrito, redirecionando para o módulo");
+    navigate(`/curso/${cursoId}/modulo/1`);
+  } else {
+    
+    console.log("Usuário não inscrito, redirecionando para os detalhes do curso");
+    navigate(`/curso/${cursoId}`);
+  }
+};
 
   return (
     <div>
@@ -81,7 +83,16 @@ function HomePage() {
       )}
 
       <div>
-        <button onClick={() => navigate("/meuscursos")}>Meus Cursos</button>
+        <button onClick={() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");  // Se não estiver logado, vai para a página de login
+    } else {
+      navigate("/meuscursos"); // Se estiver logado, vai para Meus Cursos
+    }
+  }}>
+    Meus Cursos
+  </button>
       </div>
 
       {cursos.map((curso) => (
@@ -89,7 +100,7 @@ function HomePage() {
           <h2>{curso.nome}</h2>
           <p>{curso.descricao}</p>
           <p>Instrutor: {curso.instrutor?.nome}</p>
-          {/* Alterar para usar a função handleVerCurso para redirecionar */}
+          
           <button onClick={() => handleVerCurso(curso.id)}>
             {isUserInscrito(curso.id) ? "Ir para o Módulo" : "Ver Curso"}
           </button>

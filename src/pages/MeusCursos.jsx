@@ -56,7 +56,7 @@ function MeusCursos() {
         }
       } catch (err) {
         console.error("Erro ao carregar cursos!", err);
-        setError("Erro ao carregar cursos.");
+        setError();
       }
     };
 
@@ -88,18 +88,18 @@ function MeusCursos() {
       )}
 
       <h2>Cursos que você está inscrito</h2>
-      {cursos.length > 0 ? (
-        cursos.map((curso) => (
-          <div key={curso.id}>
-            <h3>{curso.nome}</h3>
-            <p>{curso.descricao}</p>
-            <p>Modulos: {curso.modulos ? curso.modulos.length : 0}</p>
-            <button onClick={() => navigate(`/curso/${curso.id}`)}>Ver Curso</button>
-          </div>
-        ))
-      ) : (
-        <p>Você ainda não se inscreveu em nenhum curso.</p>
-      )}
+    {cursos.length > 0 ? (
+  cursos.map((curso) => (
+    <div key={curso.id}>
+      <h3>{curso.nome}</h3>
+      <p>{curso.descricao}</p>
+      <p>Modulos: {curso.modulos ? curso.modulos.length : 0}</p>
+      <button onClick={() => navigate(`/curso/${curso.id}/modulo/1`)}>Ir para o Módulo</button>
+    </div>
+  ))
+) : (
+  <p>Você ainda não está inscrito em nenhum curso.</p>
+)}
 
       {role === "INSTRUTOR" && (
         <>

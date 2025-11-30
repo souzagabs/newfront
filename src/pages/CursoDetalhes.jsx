@@ -69,14 +69,14 @@ function CursoDetalhes() {
     }
   } catch (err) {
     console.error("Erro ao inscrever-se no curso:", err);
-    setError("Erro ao inscrever-se no curso.");
+    setError("Voce já se inscreveu");
   } finally {
     setLoading(false); // Finaliza o carregamento
   }
 };
 
   if (error) {
-    return <div style={{ color: 'red', fontWeight: 'bold' }}>{error}</div>;
+    return <div style={{ color: 'green', fontWeight: 'bold' }}>{error}</div>;
   }
 
   if (!curso) {
@@ -91,16 +91,22 @@ function CursoDetalhes() {
       <h2>Modulos:</h2>
       <ul>
         {curso.modulos?.map((modulo) => (
-          <li key={modulo.id}>{modulo.titulo}</li>
-        ))}
-      </ul>
+  <li key={modulo.id}>{modulo.titulo}</li>
+    ))}
+   </ul>
+    {message && <div style={{ color: 'green', fontWeight: 'bold' }}>{message}</div>}
+     {error && <div style={{ color: 'red', fontWeight: 'bold' }}>{error}</div>}
 
-      {message && <div style={{ color: 'green', fontWeight: 'bold' }}>{message}</div>}
-      {error && <div style={{ color: 'red', fontWeight: 'bold' }}>{error}</div>}
-
-      <button onClick={inscreverCurso} disabled={isSubscribed || loading}>
-        {loading ? "Carregando..." : isSubscribed ? "Você já está inscrito" : "Inscrever-se"}
-      </button>
+     <button onClick={() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login"); // Se não estiver logado, vai para a página de login
+    } else {
+      inscreverCurso(); // Se estiver logado, chama a função de inscrição
+    }
+  }} disabled={isSubscribed || loading}>
+      {loading ? "Carregando..." : isSubscribed ? "Você já está inscrito" : "Inscrever-se"}
+</button>
     </div>
   );
 }
