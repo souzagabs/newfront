@@ -7,6 +7,7 @@ import CreateCourse from './pages/CriarCurso';
 import CreateModule from './pages/CriarModulo';
 import MeusCursos from './pages/MeusCursos';
 import CursoDetalhes from './pages/CursoDetalhes';
+import ModuloCurso from './pages/ModuloCurso';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/meuscursos" element={<MeusCursos />} />
         <Route path="/curso/:cursoId" element={<CursoDetalhes />} />
         <Route path="/cursos/meuscursos" element={<MeusCursos />} />
+        <Route path="/curso/:cursoId/modulo/:moduloId" element={<ModuloCurso />} />
       </Routes>
     </Router>
   );
