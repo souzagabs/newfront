@@ -25,7 +25,7 @@ function MeusCursos() {
 
         // Requisição para buscar os cursos
         const response = await api.get("/cursos/meuscursos", {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` }, // Garante que o token está sendo passado corretamente
         });
 
         console.log("Resposta da API - Meus Cursos:", response.data);
@@ -33,7 +33,6 @@ function MeusCursos() {
         if (response.data && Array.isArray(response.data)) {
           const cursosData = response.data;
 
-          // Para instrutores
           if (decodedToken.role === "INSTRUTOR") {
             const cursosDoInstrutor = cursosData.filter(curso => curso.instrutorId === decodedToken.id);
             console.log("Cursos criados pelo instrutor:", cursosDoInstrutor);
@@ -42,7 +41,7 @@ function MeusCursos() {
             const cursosInscritos = cursosData.filter(curso => curso.instrutorId !== decodedToken.id);
             console.log("Cursos que o instrutor se inscreveu:", cursosInscritos);
             setCursos(cursosInscritos);
-          } 
+          }
           // Para alunos
           else if (decodedToken.role === "ALUNO") {
             const cursosInscritos = cursosData.filter(curso => {
@@ -95,7 +94,7 @@ function MeusCursos() {
             <h3>{curso.nome}</h3>
             <p>{curso.descricao}</p>
             <p>Modulos: {curso.modulos ? curso.modulos.length : 0}</p>
-            <button onClick={() => navigate(`/meuscursos/${curso.id}`)}>Ver curso</button>
+            <button onClick={() => navigate(`/curso/${curso.id}`)}>Ver Curso</button>
           </div>
         ))
       ) : (
@@ -111,7 +110,7 @@ function MeusCursos() {
                 <h3>{curso.nome}</h3>
                 <p>{curso.descricao}</p>
                 <p>Modulos: {curso.modulos ? curso.modulos.length : 0}</p>
-                <button onClick={() => navigate(`/meuscursos/${curso.id}`)}>Ver curso</button>
+                <button onClick={() => navigate(`/curso/${curso.id}`)}>Ver Curso</button>
                 <button onClick={() => excluirCurso(curso.id)}>Excluir</button>
               </div>
             ))
