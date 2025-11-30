@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";  
 
 function CursoDetalhes() {
   const { cursoId } = useParams(); 
@@ -9,6 +9,8 @@ function CursoDetalhes() {
   const [message, setMessage] = useState("");  
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(false); 
+
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     async function carregarCurso() {
@@ -22,54 +24,56 @@ function CursoDetalhes() {
     }
 
     if (cursoId) {
-      carregarCurso();  // Chama a função para carregar o curso se o cursoId estiver presente
+      carregarCurso(); 
     }
   }, [cursoId]);
 
   const inscreverCurso = async () => {
-    if (isSubscribed) {
-      setMessage("Você já está inscrito neste curso.");
-      return;
-    }
+  if (isSubscribed) {
+    setMessage("Você já está inscrito neste curso.");
+    return;
+  }
 
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-    if (!token) {
-      setError("Token de autenticação não encontrado.");
-      return;
-    }
+  if (!token) {
+    setError("Token de autenticação não encontrado.");
+    return;
+  }
 
-    const decodedToken = JSON.parse(atob(token.split('.')[1]));
-    const usuarioId = decodedToken.id;
+  const decodedToken = JSON.parse(atob(token.split('.')[1]));
+  const usuarioId = decodedToken.id;
 
-    const cursoIdInt = parseInt(cursoId, 10); 
+  const cursoIdInt = parseInt(cursoId, 10); 
 
-    console.log("Enviando inscrição para o curso:", cursoIdInt, "com o usuário:", usuarioId); 
+  console.log("Enviando inscrição para o curso:", cursoIdInt, "com o usuário:", usuarioId); 
 
-    try {
-      setLoading(true); // Inicia o carregamento ao tentar inscrever
+  try {
+    setLoading(true); // Inicia o carregamento ao tentar inscrever
 
-      const response = await api.post(
-        "/cursos/inscricoes",
-        { usuarioId, cursoId: cursoIdInt },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.status === 201) {
-        setMessage("Inscrição realizada com sucesso!");
-        setIsSubscribed(true); // Marca o usuário como inscrito
-      } else {
-        setMessage(`Erro inesperado. Código de status: ${response.status}`);
+    const response = await api.post(
+      "/cursos/inscricoes",
+      { usuarioId, cursoId: cursoIdInt },
+      {
+        headers: { Authorization: `Bearer ${token}` },
       }
-    } catch (err) {
-      console.error("Erro ao inscrever-se no curso:", err);
-      setError("Erro ao inscrever-se no curso.");
-    } finally {
-      setLoading(false); // Finaliza o carregamento
+    );
+
+    if (response.status === 201) {
+      setMessage("Inscrição realizada com sucesso!");
+      setIsSubscribed(true);
+
+      navigate(`/curso/${cursoId}/modulo/1`); // Redireciona para o primeiro módulo do curso
+    } else {
+      setMessage(`Erro inesperado. Código de status: ${response.status}`);
     }
-  };
+  } catch (err) {
+    console.error("Erro ao inscrever-se no curso:", err);
+    setError("Erro ao inscrever-se no curso.");
+  } finally {
+    setLoading(false); // Finaliza o carregamento
+  }
+};
 
   if (error) {
     return <div style={{ color: 'red', fontWeight: 'bold' }}>{error}</div>;

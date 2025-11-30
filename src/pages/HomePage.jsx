@@ -44,6 +44,22 @@ function HomePage() {
     navigate("/login");
   };
 
+  // Função para verificar se o usuário está inscrito no curso
+  const isUserInscrito = (cursoId) => {
+    return user?.inscricoes?.some((inscricao) => inscricao.cursoId === cursoId);
+  };
+
+  // Função para redirecionar para o módulo ou para a página de detalhes do curso
+  const handleVerCurso = (cursoId) => {
+    if (isUserInscrito(cursoId)) {
+      // Se o usuário está inscrito, redireciona para o primeiro módulo
+      navigate(`/curso/${cursoId}/modulo/1`);
+    } else {
+      // Se o usuário não está inscrito, vai para a página de detalhes do curso
+      navigate(`/curso/${cursoId}`);
+    }
+  };
+
   return (
     <div>
       <h1>Cursos Disponíveis</h1>
@@ -73,7 +89,10 @@ function HomePage() {
           <h2>{curso.nome}</h2>
           <p>{curso.descricao}</p>
           <p>Instrutor: {curso.instrutor?.nome}</p>
-          <button onClick={() => navigate(`/curso/${curso.id}`)}>Ver Curso</button>
+          {/* Alterar para usar a função handleVerCurso para redirecionar */}
+          <button onClick={() => handleVerCurso(curso.id)}>
+            {isUserInscrito(curso.id) ? "Ir para o Módulo" : "Ver Curso"}
+          </button>
         </div>
       ))}
     </div>
