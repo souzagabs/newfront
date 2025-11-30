@@ -8,8 +8,8 @@ function ModuloCurso() {
 
   const [modulo, setModulo] = useState(null);
   const [error, setError] = useState("");
-  const [progresso, setProgresso] = useState(0); // Para mostrar o progresso do aluno
-  const [completed, setCompleted] = useState(false); // Para controlar se o módulo foi concluído
+  const [progresso, setProgresso] = useState(0);
+  const [completed, setCompleted] = useState(false); 
 
   useEffect(() => {
     const fetchModulo = async () => {

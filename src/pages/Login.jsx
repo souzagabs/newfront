@@ -12,13 +12,11 @@ function Login() {
     e.preventDefault(); // Evita que o formulário seja enviado e recarregue a página
 
     try {
-      
       const response = await api.post("/auth/login", { 
         email,     
         password,  
       });
 
-      // Verifica se o token está na resposta
       if (response.data && response.data.token) {
         // Armazena o token no localStorage
         localStorage.setItem("token", response.data.token);
@@ -36,7 +34,7 @@ function Login() {
   return (
     <div className="login-container">
       <h1>Login</h1>
-      {error && <p className="error">{error}</p>} {}
+      {error && <p className="error">{error}</p>}
       <form onSubmit={handleLogin}>
         <div>
           <label>Email</label>
@@ -58,6 +56,10 @@ function Login() {
         </div>
         <button type="submit">Entrar</button>
       </form>
+
+      <div className="register-link">
+        <p>Ainda não tem uma conta? <button onClick={() => navigate("/registrar")}>Registre-se</button></p>
+      </div>
     </div>
   );
 }
