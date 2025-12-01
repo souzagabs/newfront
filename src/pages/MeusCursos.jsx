@@ -90,7 +90,6 @@ function MeusCursos() {
     }
   };
 
-  // 🔥 ADICIONAR MÓDULO (SEM CONFIRMAR)
   const handleAdicionarModulo = () => {
     const novo = {
       id: Date.now(),
@@ -299,7 +298,6 @@ function MeusCursos() {
               </div>
             ))}
 
-            {/* 🔥 Adicionar módulo (já cria automaticamente) */}
             <button onClick={handleAdicionarModulo}>+ Adicionar módulo</button>
 
             <div style={styles.actions}>
