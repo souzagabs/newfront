@@ -8,91 +8,218 @@ function ModuloCurso() {
 
   const [modulo, setModulo] = useState(null);
   const [error, setError] = useState("");
-  const [progresso, setProgresso] = useState(0);
-  const [completed, setCompleted] = useState(false); 
+  const [completed, setCompleted] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchModulo = async () => {
+    const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await api.get(`/modulos/${cursoId}/${moduloId}`, {
-          headers: { Authorization: `Bearer ${token}` },
+
+        const moduloRes = await api.get(`/modulos/${cursoId}/${moduloId}`, {
+          headers: { Authorization: `Bearer ${token}` }
         });
 
-        setModulo(response.data);
-        // Verifica se o módulo já foi concluído
-        const progressoAluno = await api.get(`/progresso/${cursoId}/${moduloId}`, {
-          headers: { Authorization: `Bearer ${token}` },
+        console.log("MODULO DO BACK:", moduloRes.data[0]);
+
+        setModulo(moduloRes.data[0]);
+
+        // Buscar progresso
+        const progressoRes = await api.get(`/progresso/${cursoId}/${moduloId}`, {
+          headers: { Authorization: `Bearer ${token}` }
         });
-        setProgresso(progressoAluno.data.progresso);
-        setCompleted(progressoAluno.data.completed);
+
+        setCompleted(progressoRes.data.completed ?? false);
+
       } catch (err) {
-        setError("Erro ao carregar módulo.");
+        console.log(err);
+        setError("Erro ao carregar o módulo.");
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchModulo();
+    fetchData();
   }, [cursoId, moduloId]);
 
   const handleComplete = async () => {
-    const token = localStorage.getItem("token");
     try {
-      await api.post(`/progresso/${cursoId}/${moduloId}`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const token = localStorage.getItem("token");
+
+      await api.post(
+        `/progresso/${cursoId}/${moduloId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       setCompleted(true);
-      // Navegar para o próximo módulo (ou próxima página do curso)
       navigate(`/curso/${cursoId}/modulo/${parseInt(moduloId) + 1}`);
+
     } catch (err) {
-      setError("Erro ao marcar o módulo como completo.");
+      console.log(err);
+      setError("Erro ao marcar como concluído.");
     }
   };
 
-  // Função para navegar ao próximo módulo
-  const handleNextModulo = () => {
-    const nextModuloId = parseInt(moduloId) + 1; // Próximo módulo
-    if (modulo && modulo.cursoId) {
-      // Se houver mais módulos, vai para o próximo
-      if (modulo.cursoId && modulo.modulos.length > nextModuloId) {
-        navigate(`/curso/${cursoId}/modulo/${nextModuloId}`);
-      } else {
-        // Caso não haja próximo módulo, redirecionar para a página de conclusão ou outro destino
-        navigate(`/curso/${cursoId}/conclusao`);
-      }
+  if (loading) return <p>Carregando módulo...</p>;
+  if (!modulo) return <p>Erro ao carregar conteúdo.</p>;
+
+  const renderConteudo = () => {
+    const link = modulo.urlConteudo?.trim() || "";
+    const tipo = modulo.tipoConteudo
+  ?.normalize("NFD")        // separa acentos para remoção
+  .replace(/[\u0300-\u036f]/g, "")  // remove acentos
+  .toLowerCase();
+
+    if (tipo === "video") {
+      let embed = link;
+
+      if (link.includes("youtube.com/live/")) {
+  const id = link.split("youtube.com/live/")[1].split(/[?&]/)[0];
+  embed = `https://www.youtube.com/embed/${id}`;
+}
+
+// converter watch → embed
+else if (link.includes("youtube.com/watch?v=")) {
+  const id = link.split("v=")[1].split("&")[0];
+  embed = `https://www.youtube.com/embed/${id}`;
+}
+
+// converter encurtado → embed
+else if (link.includes("youtu.be/")) {
+  const id = link.split("youtu.be/")[1].split(/[?&]/)[0];
+  embed = `https://www.youtube.com/embed/${id}`;
+}
+      return (
+        <iframe
+          width="100%"
+          height="500"
+          src={embed}
+          frameBorder="0"
+          allowFullScreen
+          style={{ borderRadius: "10px" }}
+        ></iframe>
+      );
     }
+
+    if (tipo === "pdf") {
+      let pdfLink = link;
+
+      if (link.includes("drive.google.com/file")) {
+        const id = link.split("/d/")[1]?.split("/")[0];
+        pdfLink = `https://drive.google.com/file/d/${id}/preview`;
+      }
+
+      return (
+        <iframe
+          src={pdfLink}
+          width="100%"
+          height="600"
+          style={{ border: "none", borderRadius: "10px" }}
+        ></iframe>
+      );
+    }
+
+    if (tipo === "texto") {
+      return (
+        <div
+          style={{
+            background: "#f5f5f5",
+            padding: "20px",
+            borderRadius: "10px",
+            lineHeight: "1.6",
+            whiteSpace: "pre-wrap"
+          }}
+        >
+          {link}
+        </div>
+      );
+    }
+
+    if (tipo === "externo") {
+      return (
+        <a
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-block",
+            padding: "10px 15px",
+            background: "#673ab7",
+            color: "white",
+            borderRadius: "8px",
+            textDecoration: "none",
+            fontWeight: "bold"
+          }}
+        >
+          Abrir Conteúdo Externo
+        </a>
+      );
+    }
+
+    // FALLBACK 
+    return <p>Tipo de conteúdo não suportado.</p>;
   };
 
   return (
-    <div>
-      <h1>{modulo?.titulo}</h1>
-      <p>{modulo?.tipoConteudo}</p>
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <h1 style={styles.title}>{modulo.titulo}</h1>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        <div style={styles.conteudoArea}>{renderConteudo()}</div>
 
-      <div>
-        {modulo?.tipoConteudo === "video" && (
-          <video src={modulo.urlConteudo} controls />
-        )}
-        {modulo?.tipoConteudo === "texto" && (
-          <p>{modulo?.urlConteudo}</p>
-        )}
-        {modulo?.tipoConteudo === "externo" && (
-          <a href={modulo.urlConteudo} target="_blank" rel="noopener noreferrer">
-            Acesse o conteúdo
-          </a>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        {!completed ? (
+          <button style={styles.botao} onClick={handleComplete}>
+            ✔ Marcar como concluído
+          </button>
+        ) : (
+          <button
+            style={styles.botao}
+            onClick={() =>
+              navigate(`/curso/${cursoId}/modulo/${parseInt(moduloId) + 1}`)
+            }
+          >
+            👉 Ir para o próximo módulo
+          </button>
         )}
       </div>
-
-      {!completed && (
-        <button onClick={handleComplete}>Marcar como Completo</button>
-      )}
-      {completed && <p>Você já completou este módulo!</p>}
-      
-      <button onClick={handleNextModulo}>
-        Próximo Módulo
-      </button>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    padding: "30px",
+    background: "#f2f2f2",
+    minHeight: "100vh"
+  },
+  card: {
+    width: "80%",
+    background: "white",
+    borderRadius: "10px",
+    padding: "25px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
+  },
+  title: {
+    marginBottom: "20px"
+  },
+  conteudoArea: {
+    marginBottom: "30px"
+  },
+  botao: {
+    padding: "12px 20px",
+    fontSize: "16px",
+    border: "none",
+    background: "#673ab7",
+    color: "white",
+    borderRadius: "8px",
+    cursor: "pointer"
+  }
+};
 
 export default ModuloCurso;

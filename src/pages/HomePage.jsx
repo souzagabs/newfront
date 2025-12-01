@@ -40,17 +40,16 @@ function HomePage() {
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null); // Limpa os dados do usuário no estado
-    navigate("/login"); // Redireciona para a página de login
+    navigate("/login");
   };
 
-  // Função para verificar se o usuário está inscrito no curso
   const isUserInscrito = (cursoId) => {
     return user?.inscricoes?.some((inscricao) => inscricao.cursoId === cursoId);
   };
 
   // Função para redirecionar o usuário
   const handleVerCurso = (cursoId) => {
-  console.log("Curso ID: ", cursoId); // Verificando qual curso foi clicado
+  console.log("Curso ID: ", cursoId);
   if (isUserInscrito(cursoId)) {
 
     console.log("Usuário já inscrito, redirecionando para o módulo");
