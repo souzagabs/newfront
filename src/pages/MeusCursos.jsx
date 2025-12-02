@@ -34,15 +34,26 @@ function MeusCursos() {
           const cursosData = response.data;
 
           if (decodedToken.role === "INSTRUTOR") {
-            const cursosDoInstrutor = cursosData.filter(
-              (c) => c.instrutorId === decodedToken.id
-            );
-            setCursosCriados(cursosDoInstrutor);
+  // Cursos criados pelo instrutor
+  const cursosDoInstrutor = cursosData.filter(
+    (c) => c.instrutorId === decodedToken.id
+  );
+  const cursosUnicos = cursosDoInstrutor.filter(
+    (curso, index, self) =>
+      index === self.findIndex((c) => c.id === curso.id)
+  );
+  setCursosCriados(cursosUnicos);
 
-            const cursosInscritos = cursosData.filter(
-              (c) => c.instrutorId !== decodedToken.id
-            );
-            setCursos(cursosInscritos);
+  // Cursos em que o instrutor está inscrito (não criados por ele)
+  const cursosInscritos = cursosData.filter(
+    (c) => c.instrutorId !== decodedToken.id
+  );
+  const cursosInscritosUnicos = cursosInscritos.filter(
+    (curso, index, self) =>
+      index === self.findIndex((c) => c.id === curso.id)
+  );
+  setCursos(cursosInscritosUnicos);
+
           } else if (decodedToken.role === "ALUNO") {
             const cursosInscritos = cursosData.filter((c) =>
               c.inscricoes?.some((i) => i.userId === decodedToken.id)
@@ -258,21 +269,6 @@ function MeusCursos() {
                       }}
                     />
 
-                    <label>Descrição:</label>
-                    <textarea
-                      value={m.descricao || ""}
-                      onChange={(e) => {
-                        const novos = cursoEditando.modulos.map((mod) =>
-                          mod.id === m.id
-                            ? { ...mod, descricao: e.target.value }
-                            : mod
-                        );
-                        setCursoEditando({
-                          ...cursoEditando,
-                          modulos: novos,
-                        });
-                      }}
-                    />
 
                     <label>Link do vídeo (YouTube):</label>
                     <input
