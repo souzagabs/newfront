@@ -7,7 +7,7 @@ function ModuloCurso() {
   const navigate = useNavigate();
 
   const [modulo, setModulo] = useState(null);
-  const [error, setError] = useState("");
+  const [modulosCurso, setModulosCurso] = useState([]);
   const [completed, setCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -15,37 +15,29 @@ function ModuloCurso() {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
-
-        const moduloRes = await api.get(
+        
+        const modulosRes = await api.get(
           `/modulos/curso/${cursoId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        console.log("MODULOS DO CURSO:", moduloRes.data);
+        setModulosCurso(modulosRes.data);
 
-        const moduloEncontrado = moduloRes.data.find(
-          (m) => m.id == moduloId
-        );
+        const m = modulosRes.data.find((x) => x.id == moduloId);
+        if (!m) throw new Error("Módulo não encontrado");
 
-        if (!moduloEncontrado) {
-          throw new Error("Módulo não encontrado.");
-        }
+        setModulo(m);
 
-        setModulo(moduloEncontrado);
-
-        // Busca progresso
+        // Carrega progresso
         const progressoRes = await api.get(
           `/progresso/${cursoId}/${moduloId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         setCompleted(progressoRes.data.completed ?? false);
 
       } catch (err) {
         console.log(err);
-        setError("Erro ao carregar o módulo.");
       } finally {
         setLoading(false);
       }
@@ -54,7 +46,7 @@ function ModuloCurso() {
     fetchData();
   }, [cursoId, moduloId]);
 
-  //Marca como concluído
+  // Concluir módulo
   const handleComplete = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -68,21 +60,16 @@ function ModuloCurso() {
       setCompleted(true);
 
       navigate(`/curso/${cursoId}/modulo/${parseInt(moduloId) + 1}`);
-
     } catch (err) {
       console.log(err);
-      setError("Erro ao marcar como concluído.");
     }
   };
 
-  if (loading) return <p>Carregando módulo...</p>;
-  if (!modulo) return <p>Erro ao carregar conteúdo.</p>;
-
+  // ----- Renderiza conteúdo -----
   const renderConteudo = () => {
     const link = modulo.urlConteudo?.trim() || "";
     const tipo = modulo.tipoConteudo
-      ?.normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
+      ?.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
       .toLowerCase();
 
     if (tipo === "video") {
@@ -91,7 +78,7 @@ function ModuloCurso() {
       if (link.includes("youtube.com/live/")) {
         const id = link.split("youtube.com/live/")[1].split(/[?&]/)[0];
         embed = `https://www.youtube.com/embed/${id}`;
-      } else if (link.includes("youtube.com/watch?v=")) {
+      } else if (link.includes("watch?v=")) {
         const id = link.split("v=")[1].split("&")[0];
         embed = `https://www.youtube.com/embed/${id}`;
       } else if (link.includes("youtu.be/")) {
@@ -102,7 +89,7 @@ function ModuloCurso() {
       return (
         <iframe
           width="100%"
-          height="500"
+          height="480"
           src={embed}
           frameBorder="0"
           allowFullScreen
@@ -124,7 +111,7 @@ function ModuloCurso() {
           src={pdfLink}
           width="100%"
           height="600"
-          style={{ border: "none", borderRadius: "10px" }}
+          style={{ borderRadius: "10px", border: "none" }}
         ></iframe>
       );
     }
@@ -136,8 +123,7 @@ function ModuloCurso() {
             background: "#f5f5f5",
             padding: "20px",
             borderRadius: "10px",
-            lineHeight: "1.6",
-            whiteSpace: "pre-wrap"
+            lineHeight: 1.6
           }}
         >
           {link}
@@ -145,46 +131,47 @@ function ModuloCurso() {
       );
     }
 
-    if (tipo === "externo") {
-      return (
-        <a
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: "inline-block",
-            padding: "10px 15px",
-            background: "#673ab7",
-            color: "white",
-            borderRadius: "8px",
-            textDecoration: "none",
-            fontWeight: "bold"
-          }}
-        >
-          Abrir Conteúdo Externo
-        </a>
-      );
-    }
-
-    return <p>Tipo de conteúdo não suportado.</p>;
+    return <p>Conteúdo não suportado.</p>;
   };
 
+  if (loading) return <p>Carregando...</p>;
+  if (!modulo) return <p>Erro ao carregar módulo</p>;
+
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>{modulo.titulo}</h1>
+    <div style={styles.page}>
+      
+      {/* SIDEBAR*/}
+      <aside style={styles.sidebar}>
+        <h3 style={{ padding: "15px" }}>Módulos</h3>
+        {modulosCurso.map((m) => (
+          <div
+            key={m.id}
+            onClick={() => navigate(`/curso/${cursoId}/modulo/${m.id}`)}
+            style={{
+              padding: "12px 15px",
+              cursor: "pointer",
+              background: m.id == moduloId ? "#ece0ff" : "transparent",
+              borderLeft: m.id == moduloId ? "4px solid #673ab7" : "4px solid transparent"
+            }}
+          >
+            ▶ {m.titulo}
+          </div>
+        ))}
+      </aside>
 
-        <div style={styles.conteudoArea}>{renderConteudo()}</div>
+      {/*CONTEÚDO */}
+      <main style={styles.content}>
+        <h1>{modulo.titulo}</h1>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {renderConteudo()}
 
         {!completed ? (
-          <button style={styles.botao} onClick={handleComplete}>
+          <button style={styles.button} onClick={handleComplete}>
             ✔ Marcar como concluído
           </button>
         ) : (
           <button
-            style={styles.botao}
+            style={styles.button}
             onClick={() =>
               navigate(`/curso/${cursoId}/modulo/${parseInt(moduloId) + 1}`)
             }
@@ -192,42 +179,40 @@ function ModuloCurso() {
             👉 Ir para o próximo módulo
           </button>
         )}
-      </div>
+      </main>
     </div>
   );
 }
 
 const styles = {
-  container: {
-    width: "100%",
+  page: {
     display: "flex",
-    justifyContent: "center",
-    padding: "30px",
-    background: "#f2f2f2",
-    minHeight: "100vh"
+    background: "#f4f4f4",
+    minHeight: "100vh", 
   },
-  card: {
-    width: "80%",
+  sidebar: {
+    width: "280px",
     background: "white",
-    borderRadius: "10px",
+    borderRight: "1px solid #ddd",
+    overflowY: "auto",     
+    maxHeight: "100vh"     
+  },
+  content: {
+    flex: 1,
     padding: "25px",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
+    overflow: "visible",
   },
-  title: {
-    marginBottom: "20px"
-  },
-  conteudoArea: {
-    marginBottom: "30px"
-  },
-  botao: {
+  button: {
+    marginTop: "20px",
     padding: "12px 20px",
-    fontSize: "16px",
-    border: "none",
     background: "#673ab7",
     color: "white",
+    border: "none",
     borderRadius: "8px",
-    cursor: "pointer"
+    cursor: "pointer",
+    fontSize: "16px"
   }
 };
+
 
 export default ModuloCurso;

@@ -312,16 +312,22 @@ function MeusCursos() {
 
                     <label>Link do vídeo (YouTube):</label>
                     <input
-                      value={m.urlConteudo || ""}
-                      onChange={(e) => {
-                      const novos = cursoEditando.modulos.map((mod) =>
-                      mod.id === m.id
-                      ? { ...mod, urlConteudo: e.target.value }
-                      : mod
-                      );
-                     setCursoEditando({ ...cursoEditando, modulos: novos });
-                    }}
-
+                    value={m.urlConteudo || ""}
+                    onChange={(e) => {
+                    const novos = cursoEditando.modulos.map((mod) =>
+                    mod.id === m.id
+                    ? {
+                     ...mod,
+                    urlConteudo: e.target.value,
+                    tipoConteudo: mod.tipoConteudo || "video", 
+                      }
+                    : mod
+                     );
+                    setCursoEditando({
+                    ...cursoEditando,
+                    modulos: novos,
+                    });
+                      }}
                     />
 
                     <button onClick={() => removerModulo(m.id)}>
