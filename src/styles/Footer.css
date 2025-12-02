@@ -1,0 +1,78 @@
+.footer-container {
+  width: 100%;
+  background: #0d0d0d;
+  border-top: 2px solid rgba(155, 77, 255, 0.4);
+  padding: 40px 0 20px;
+  margin-top: 60px;
+  color: #ccc;
+  font-family: 'Exo', sans-serif;
+}
+
+.footer-content {
+  max-width: 1300px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 0 40px;
+  flex-wrap: wrap;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 250px;
+}
+
+.footer-logo {
+  font-size: 1.8rem;
+  font-family: "Orbitron", sans-serif;
+  color: #9B4DFF;
+  margin-bottom: 8px;
+}
+
+.footer-description {
+  color: #bbb;
+  line-height: 1.5rem;
+}
+
+.footer-section h3 {
+  color: #00BFFF;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin: 6px 0;
+}
+
+.footer-section ul li a {
+  color: #ccc;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+  color: #9B4DFF;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+  .footer-content {
+    text-align: center;
+    justify-content: center;
+  }
+}

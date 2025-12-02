@@ -7,11 +7,15 @@ import CreateCourse from './pages/CriarCurso';
 import MeusCursos from './pages/MeusCursos';
 import CursoDetalhes from './pages/CursoDetalhes';
 import ModuloCurso from './pages/ModuloCurso';
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 function App() {
   return (
     <Router>
+        <Header />
       <Routes>
+       
         <Route path="/" element={<HomePage />} />
         <Route path="/home" element={<HomePage />} />
 
@@ -19,12 +23,12 @@ function App() {
         <Route path="/registrar" element={<Register />} />
 
         <Route path="/criarcurso" element={<CreateCourse />} />
-       
         <Route path="/meuscursos" element={<MeusCursos />} />
         <Route path="/curso/:cursoId" element={<CursoDetalhes />} />
         <Route path="/cursos/meuscursos" element={<MeusCursos />} />
         <Route path="/curso/:cursoId/modulo/:moduloId" element={<ModuloCurso />} />
       </Routes>
+      <Footer />
     </Router>
   );
 }
