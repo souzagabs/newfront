@@ -48,14 +48,36 @@ function HomePage() {
   };
 
   // Função para redirecionar o usuário
-  const handleVerCurso = (cursoId) => {
+  const handleVerCurso = async (cursoId) => {
   console.log("Curso ID: ", cursoId);
-  if (isUserInscrito(cursoId)) {
 
+  if (isUserInscrito(cursoId)) {
     console.log("Usuário já inscrito, redirecionando para o módulo");
-    navigate(`/curso/${cursoId}/modulo/1`);
+
+    try {
+      const token = localStorage.getItem("token");
+
+      // Buscar os módulos reais do curso
+      const res = await api.get(`/modulos/curso/${cursoId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.data.length === 0) {
+        console.log("Curso sem módulos. Enviando para detalhes.");
+        return navigate(`/curso/${cursoId}`);
+      }
+
+      const primeiroModulo = res.data[0]; // pega o primeiro módulo de verdade
+
+      navigate(`/curso/${cursoId}/modulo/${primeiroModulo.id}`);
+
+    } catch (error) {
+      console.log("Erro ao carregar módulos:", error);
+      navigate(`/curso/${cursoId}`);
+    }
+
   } else {
-    
+
     console.log("Usuário não inscrito, redirecionando para os detalhes do curso");
     navigate(`/curso/${cursoId}`);
   }
