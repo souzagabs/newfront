@@ -1,143 +1,166 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo:wght@300;400;500&display=swap');
 
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
 
 body {
-  overflow-x: hidden; 
+  overflow-x: hidden;
 }
 
 .home-page {
   padding: 0;
-  margin: 0; 
-  background: linear-gradient(135deg, #121212, #1f1f1f, #2b2b2b);
-  background-size: 400% 400%; 
-  animation: gradient-animation 10s ease infinite; 
+  margin: 0;
+  background: linear-gradient(135deg, #121212, #1b1b1b, #262626);
+  background-size: 350% 350%;
+  animation: homeBG 12s ease infinite;
   color: white;
   font-family: 'Exo', sans-serif;
-  min-height: 100vh; 
+  min-height: 100vh;
   display: flex;
-  flex-direction: column; 
-  justify-content: flex-start; 
-  overflow: hidden; 
+  flex-direction: column;
+  align-items: center;
 }
 
-@keyframes gradient-animation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+@keyframes homeBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-h1 {
-  font-family: 'Orbitron', sans-serif; 
-  font-size: 3.5rem;
+.home-page h1 {
+  font-family: 'Orbitron', sans-serif;
   color: #9B4DFF;
-  text-align: center;
-  margin-bottom: 30px;
+  font-size: 3.4rem;
+  margin-top: 40px;
+  text-shadow: 0 0 6px rgba(155, 77, 255, 0.6);
+  margin-bottom: 28px;
 }
-
-
-button {
-  font-family: 'Exo', sans-serif; 
-  padding: 12px 24px;
-  background-color: #00BFFF;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); 
-}
-
-button:hover {
-  background-color: #9B4DFF; 
-  transform: scale(1.05); 
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
-}
-
-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
-}
-
 
 .nav-container {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
 }
 
 .nav-container span {
-  color: #FF1493; 
+  font-family: 'Orbitron', sans-serif;
+  color: #FF1493;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
 }
 
-.nav-container button {
-  background-color: #FF1493; 
+button {
+  font-family: 'Exo', sans-serif;
+  padding: 12px 22px;
+  background: linear-gradient(90deg, #00BFFF, #9B4DFF);
   color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.05rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+button:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 14px rgba(155, 77, 255, 0.55);
+}
+
+.nav-container .logout-btn {
+  background: rgba(255, 20, 147, 0.18);
+  border: 1px solid rgba(255, 20, 147, 0.35);
+  backdrop-filter: blur(6px);
+  padding: 10px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  transition: 0.25s ease;
+}
+
+.nav-container .logout-btn:hover {
+  background: rgba(255, 20, 147, 0.35);
+  box-shadow: 0 0 12px rgba(255, 20, 147, 0.6);
+  transform: translateY(-2px);
+}
+
+.logout-icon {
+  width: 18px;
+  filter: drop-shadow(0 0 3px #FF1493);
+}
+
+.home-page .meus-cursos-btn {
+  margin-top: 12px;
+  padding: 10px 20px;
+  font-size: 1rem;
 }
 
 .cursos-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 30px;
-  justify-items: center;
-  margin-top: 30px;
+  gap: 32px;
+  padding: 20px 40px;
+  width: 100%;
+  max-width: 1300px;
+  margin-top: 25px;
 }
 
 .curso-card {
-  background: #1f1f1f; 
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-  width: 100%;
-  border: 2px solid transparent; 
-  text-align: center;
+  background: #1a1a1a;
+  padding: 22px;
+  border-radius: 14px;
   position: relative;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.curso-card:before {
+.curso-card::before {
   content: '';
   position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
-  background: linear-gradient(45deg, #00BFFF, #9B4DFF); 
-  border-radius: 10px;
+  inset: -4px;
+  border-radius: 14px;
+  background: linear-gradient(45deg, #00BFFF, #9B4DFF, #FF1493);
   z-index: -1;
+  opacity: 0.12;
+  transition: opacity 0.25s;
 }
 
 .curso-card:hover {
-  transform: translateY(-10px); 
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); 
+  transform: translateY(-8px);
+  box-shadow: 0 0 20px rgba(155, 77, 255, 0.2);
+}
+
+.curso-card:hover::before {
+  opacity: 0.22;
 }
 
 .curso-card h2 {
-  font-family: 'Orbitron', sans-serif; 
-  color: #FF1493; 
-  margin-bottom: 10px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  color: #FF1493;
+  margin-bottom: 12px;
 }
 
 .curso-card p {
-  color: #B0B0B0; 
-  margin-bottom: 15px;
+  color: #b8b8b8;
+  margin-bottom: 10px;
 }
 
 .curso-card .instrutor {
+  color: #9B4DFF;
+  margin-bottom: 14px;
   font-size: 0.9rem;
-  color: #34495e;
+}
+
+.curso-card button {
+  padding: 10px 16px;
+  font-size: 1rem;
 }
