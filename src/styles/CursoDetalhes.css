@@ -72,16 +72,14 @@
   transform: scale(1.05);
 }
 
-/* Mensagens */
 .message {
   margin-top: 20px;
   font-size: 1.2rem;
   font-weight: bold;
-  color: #FF1493; /* Neon Rosa */
+  color: #FF1493;
   text-align: center;
 }
 
-/* Erro */
 .error {
   color: red;
   font-weight: bold;
@@ -115,11 +113,10 @@
   cursor: not-allowed;
 }
 
-/* Efeito de Neon no Nome do Curso */
 .curso-header h1 {
   font-family: 'Orbitron', sans-serif;
   font-size: 3.5rem;
-  color: #9B4DFF; /* Neon roxo */
+  color: #9B4DFF;
   margin-bottom: 15px;
   text-transform: uppercase;
   text-align: center;

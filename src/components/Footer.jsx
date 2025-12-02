@@ -7,32 +7,37 @@ function Footer() {
         
         {/* LOGO / NOME */}
         <div className="footer-section">
-          <h2 className="footer-logo">NeonLearn</h2>
+          <h2 className="footer-logo">NeoAcademy</h2>
           <p className="footer-description">
             Plataforma moderna de aprendizado, feita para acelerar o seu futuro.
           </p>
         </div>
 
-        {/* LINKS */}
         <div className="footer-section">
           <h3>Links Rápidos</h3>
           <ul>
             <li><a href="/home">Home</a></li>
             <li><a href="/meuscursos">Meus Cursos</a></li>
-            <li><a href="/criarcurso">Criar Curso</a></li>
-            <li><a href="/login">Entrar</a></li>
           </ul>
         </div>
 
         <div className="footer-section">
           <h3>Contato</h3>
-          <p>📧 suporte@neonlearn.com</p>
-          <p>🌐 www.neonlearn.com</p>
+          <p>📧 neoacad3demy@gmail.com</p>
         </div>
       </div>
 
+      {/* AVISO INSTITUCIONAL */}
+      <div className="footer-warning">
+        <p>
+          A NeoAcademy não hospeda nem distribui conteúdo de terceiros.  
+          Materiais dos cursos são responsabilidade exclusiva de seus instrutores.  
+          Consulte nossa <a href="/politica-de-direitos-autorais">Política de Direitos Autorais</a>.
+        </p>
+      </div>
+
       <div className="footer-bottom">
-        <p>© {new Date().getFullYear()} NeonLearn — Todos os direitos reservados.</p>
+        <p>© {new Date().getFullYear()} NeoAcademy — Todos os direitos reservados.</p>
       </div>
     </footer>
   );

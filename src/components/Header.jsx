@@ -53,9 +53,9 @@ function Header() {
 
       {/* LOGO */}
       <div className="header-left" onClick={() => navigate("/home")}>
-        <h2 className="brand">NeonAcademy</h2>
+        <h2 className="brand">NeoAcademy</h2>
       </div>
-      
+
       <nav className="header-nav">
         <button onClick={() => navigate("/home")}>Home</button>
 

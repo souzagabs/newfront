@@ -1,7 +1,6 @@
 .footer-container {
   width: 100%;
   background: #0d0d0d;
-  border-top: 2px solid rgba(155, 77, 255, 0.4);
   padding: 40px 0 20px;
   margin-top: 60px;
   color: #ccc;
@@ -75,4 +74,22 @@
     text-align: center;
     justify-content: center;
   }
+}
+
+.footer-warning {
+  margin-top: 20px;
+  padding: 12px 0;
+  text-align: center;
+  font-size: 0.65rem;
+  color: #cccccc;
+  line-height: 1.4;
+}
+
+.footer-warning a {
+  color: #9B4DFF;
+  text-decoration: none;
+}
+
+.footer-warning a:hover {
+  text-decoration: underline;
 }
