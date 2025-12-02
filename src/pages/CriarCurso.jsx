@@ -29,7 +29,6 @@ function CriarCurso() {
     setModalIsOpen(true);
   };
 
-  // Adiciona módulo somente ao array local
   const handleAdicionarModulo = () => {
     if (!tituloModulo || !urlConteudo) return;
 
