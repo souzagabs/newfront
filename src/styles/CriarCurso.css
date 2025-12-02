@@ -1,0 +1,186 @@
+.criar-curso-page {
+  min-height: 100vh;
+  padding: 32px;
+  background: linear-gradient(135deg, #0d0d0d, #1b1b1b, #262626);
+  background-size: 300% 300%;
+  animation: criarCursoBG 10s ease infinite;
+  color: white;
+  font-family: 'Exo', sans-serif;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+}
+
+@keyframes criarCursoBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.page-title {
+  font-size: 2.6rem;
+  color: #9B4DFF;
+  font-family: 'Orbitron', sans-serif;
+  margin-bottom: 24px;
+  text-align: center; /* CENTRALIZA TíTULO */
+}
+
+/* Formulário CENTRALIZADO */
+.criar-curso-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 500px;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.criar-curso-form label {
+  font-size: 1rem;
+  color: #FF1493;
+  margin-bottom: -6px;
+}
+
+.criar-curso-form input,
+.criar-curso-form textarea {
+  background: #1b1b1b;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 12px;
+  color: white;
+  outline: none;
+  font-size: 1rem;
+}
+
+.criar-curso-form textarea {
+  height: 120px;
+  resize: none;
+}
+
+.criar-curso-form input:focus,
+.criar-curso-form textarea:focus {
+  border-color: #9B4DFF;
+}
+
+/* Botões isolados */
+.criar-curso-page .primary-btn,
+.criar-curso-page .secondary-btn {
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: 'Exo', sans-serif;
+  transition: transform 0.2s ease;
+}
+
+.criar-curso-page .primary-btn {
+  background: linear-gradient(90deg, #00BFFF, #9B4DFF);
+  color: white;
+}
+.criar-curso-page .primary-btn:hover {
+  transform: scale(1.05);
+}
+
+.criar-curso-page .secondary-btn {
+  background: #9B4DFF;
+  color: white;
+}
+.criar-curso-page .secondary-btn:hover {
+  transform: scale(1.05);
+}
+
+/* ERRO */
+.error-text {
+  color: #FF4D6D;
+  margin-bottom: 10px;
+}
+
+/* Modal Overlay */
+.modal-overlay-criar {
+  background: rgba(0,0,0,0.65);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* MODAL SEM BRILHO */
+.modal-criar {
+  background: #121212;
+  padding: 24px;
+  border-radius: 14px;
+  width: 95%;
+  max-width: 550px;
+  outline: none;
+  border: 1px solid rgba(155,77,255,0.18);
+
+  /* REMOVIDO:
+     box-shadow: 0 0 18px rgba(155,77,255,0.3);
+  */
+
+  color: white;
+
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center; /* CENTRALIZA CONTEÚDO INTERNO */
+}
+
+.modal-title {
+  font-size: 1.8rem;
+  font-family: "Orbitron", sans-serif;
+  color: #9B4DFF;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.modal-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.modal-inputs label {
+  color: #FF1493;
+}
+
+.modal-inputs input,
+.modal-inputs select {
+  background: #1b1b1b;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  padding: 10px;
+  color: white;
+}
+
+.modulos-lista-preview {
+  margin-top: 16px;
+  padding: 12px;
+  background: #1a1a1a;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.modulo-preview {
+  padding: 6px 0;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.modulo-preview:last-child {
+  border-bottom: none;
+}
+
+.close-modal-btn {
+  margin-top: 14px;
+  width: 100%;
+}

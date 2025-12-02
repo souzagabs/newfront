@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../services/api";
+import "../styles/ModuloCurso.css";
 
 function ModuloCurso() {
   const { cursoId, moduloId } = useParams();
@@ -135,21 +136,15 @@ function ModuloCurso() {
   if (!modulo) return <p>Erro ao carregar módulo</p>;
 
   return (
-    <div style={styles.page}>
-      
+    <div className="modulo-curso">
       {/* SIDEBAR */}
-      <aside style={styles.sidebar}>
-        <h3 style={{ padding: "15px" }}>Módulos</h3>
+      <aside className="sidebar">
+        <h3>Módulos</h3>
         {modulosCurso.map((m) => (
           <div
             key={m.id}
+            className={`sidebar-item ${m.id == moduloId ? "active" : ""}`}
             onClick={() => navigate(`/curso/${cursoId}/modulo/${m.id}`)}
-            style={{
-              padding: "12px 15px",
-              cursor: "pointer",
-              background: m.id == moduloId ? "#ece0ff" : "transparent",
-              borderLeft: m.id == moduloId ? "4px solid #673ab7" : "4px solid transparent"
-            }}
           >
             ▶ {m.titulo}
           </div>
@@ -157,12 +152,11 @@ function ModuloCurso() {
       </aside>
 
       {/* CONTEÚDO */}
-      <main style={styles.content}>
+      <main className="content">
         <h1>{modulo.titulo}</h1>
-
         {renderConteudo()}
 
-        <div style={styles.teoriaBox}>
+        <div className="teoria-box">
           <h2>📘 Teoria / Anotações</h2>
           <p>
             {modulo.descricao || "Nenhuma teoria adicionada ainda."}
@@ -170,12 +164,12 @@ function ModuloCurso() {
         </div>
 
         {!completed ? (
-          <button style={styles.button} onClick={handleComplete}>
+          <button className="button" onClick={handleComplete}>
             ✔ Marcar como concluído
           </button>
         ) : (
           <button
-            style={styles.button}
+            className="button"
             onClick={() =>
               navigate(`/curso/${cursoId}/modulo/${parseInt(moduloId) + 1}`)
             }
@@ -187,45 +181,5 @@ function ModuloCurso() {
     </div>
   );
 }
-
-const styles = {
-  page: {
-    display: "flex",
-    background: "#f4f4f4",
-    minHeight: "100vh",
-  },
-  sidebar: {
-    width: "280px",
-    background: "white",
-    borderRight: "1px solid #ddd",
-    overflowY: "auto",
-    maxHeight: "100vh"
-  },
-  content: {
-    flex: 1,
-    padding: "25px",
-    overflow: "visible",
-  },
-
-  teoriaBox: {
-    marginTop: "30px",
-    background: "white",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
-    lineHeight: 1.6
-  },
-
-  button: {
-    marginTop: "20px",
-    padding: "12px 20px",
-    background: "#673ab7",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontSize: "16px"
-  }
-};
 
 export default ModuloCurso;

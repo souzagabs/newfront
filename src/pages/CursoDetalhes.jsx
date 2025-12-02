@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import { useParams, useNavigate } from "react-router-dom";  
+import { useParams, useNavigate } from "react-router-dom";
+import "../styles/CursoDetalhes.css";
 
 function CursoDetalhes() {
   const { cursoId } = useParams(); 
@@ -29,84 +30,94 @@ function CursoDetalhes() {
   }, [cursoId]);
 
   const inscreverCurso = async () => {
-  if (isSubscribed) {
-    setMessage("Você já está inscrito neste curso.");
-    return;
-  }
-
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    setError("Token de autenticação não encontrado.");
-    return;
-  }
-
-  const decodedToken = JSON.parse(atob(token.split('.')[1]));
-  const usuarioId = decodedToken.id;
-
-  const cursoIdInt = parseInt(cursoId, 10); 
-
-  console.log("Enviando inscrição para o curso:", cursoIdInt, "com o usuário:", usuarioId); 
-
-  try {
-    setLoading(true); // Inicia o carregamento ao tentar inscrever
-
-    const response = await api.post(
-      "/cursos/inscricoes",
-      { usuarioId, cursoId: cursoIdInt },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    if (response.status === 201) {
-      setMessage("Inscrição realizada com sucesso!");
-      setIsSubscribed(true);
-
-      navigate(`/curso/${cursoId}/modulo/1`); // Redireciona para o primeiro módulo do curso
-    } else {
-      setMessage(`Erro inesperado. Código de status: ${response.status}`);
+    if (isSubscribed) {
+      setMessage("Você já está inscrito neste curso.");
+      return;
     }
-  } catch (err) {
-    console.error("Erro ao inscrever-se no curso:", err);
-    setError("Voce já se inscreveu");
-  } finally {
-    setLoading(false); // Finaliza o carregamento
-  }
-};
 
-  if (error) {
-    return <div style={{ color: 'green', fontWeight: 'bold' }}>{error}</div>;
-  }
+    const token = localStorage.getItem("token");
 
-  if (!curso) {
-    return <div>Carregando...</div>;
-  }
+    if (!token) {
+      setError("Token de autenticação não encontrado.");
+      return;
+    }
+
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    const usuarioId = decodedToken.id;
+
+    const cursoIdInt = parseInt(cursoId, 10); 
+
+    try {
+      setLoading(true); 
+
+      const response = await api.post(
+        "/cursos/inscricoes",
+        { usuarioId, cursoId: cursoIdInt },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status === 201) {
+        setMessage("Inscrição realizada com sucesso!");
+        setIsSubscribed(true);
+
+        const modulosResponse = await api.get(`/modulos/curso/${cursoId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (modulosResponse.data.length > 0) {
+          const primeiroModuloId = modulosResponse.data[0].id;
+          navigate(`/curso/${cursoId}/modulo/${primeiroModuloId}`);
+        } else {
+          navigate(`/curso/${cursoId}`);
+        }
+      } else {
+        setMessage(`Erro inesperado. Código de status: ${response.status}`);
+      }
+    } catch (err) {
+      console.error("Erro ao inscrever-se no curso:", err);
+      setError("Você já se inscreveu.");
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  if (error) return <div className="error">{error}</div>;
+
+  if (!curso) return <div>Carregando...</div>;
 
   return (
-    <div>
-      <h1>{curso.nome}</h1>
-      <p>{curso.descricao}</p>
-      <p>Instrutor: {curso.instrutor?.nome}</p>
-      <h2>Modulos:</h2>
-      <ul>
-        {curso.modulos?.map((modulo) => (
-  <li key={modulo.id}>{modulo.titulo}</li>
-    ))}
-   </ul>
-    {message && <div style={{ color: 'green', fontWeight: 'bold' }}>{message}</div>}
-     {error && <div style={{ color: 'red', fontWeight: 'bold' }}>{error}</div>}
+    <div className="curso-detalhes">
+      <div className="curso-header">
+        <h1>{curso.nome}</h1>
+        <p className="descricao">{curso.descricao}</p>
+        <p><strong>Instrutor:</strong> {curso.instrutor?.nome}</p>
+      </div>
 
-     <button onClick={() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login"); // Se não estiver logado, vai para a página de login
-    } else {
-      inscreverCurso(); // Se estiver logado, chama a função de inscrição
-    }
-  }} disabled={isSubscribed || loading}>
-      {loading ? "Carregando..." : isSubscribed ? "Você já está inscrito" : "Inscrever-se"}
-</button>
+      <div className="modulos-container">
+        <h2>Modulos:</h2>
+        <ul>
+          {curso.modulos?.map((modulo) => (
+            <li key={modulo.id} className="modulo-item">{modulo.titulo}</li>
+          ))}
+        </ul>
+      </div>
+
+      {message && <div className="message">{message}</div>}
+
+      <button 
+        className="inscrever-btn"
+        onClick={() => {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            navigate("/login"); 
+          } else {
+            inscreverCurso();
+          }
+        }}
+        disabled={isSubscribed || loading}
+      >
+        {loading ? "Carregando..." : isSubscribed ? "Você já está inscrito" : "Inscrever-se"}
+      </button>
     </div>
   );
 }
