@@ -252,7 +252,7 @@ function MeusCursos() {
               }
             />
 
-            <label>Fundamentação Teórica</label>
+            <label>Anotações</label>
             <textarea
               value={cursoEditando.descricao}
               onChange={(e) =>
