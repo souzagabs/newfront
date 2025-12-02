@@ -13,6 +13,10 @@ function ModuloCurso() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [moduloId]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -121,7 +125,7 @@ function ModuloCurso() {
             background: "#f5f5f5",
             padding: "20px",
             borderRadius: "10px",
-            lineHeight: 1.6
+            lineHeight: 1.6,
           }}
         >
           {link}
@@ -137,6 +141,7 @@ function ModuloCurso() {
 
   return (
     <div className="modulo-curso">
+
       {/* SIDEBAR */}
       <aside className="sidebar">
         <h3>Módulos</h3>
@@ -154,13 +159,12 @@ function ModuloCurso() {
       {/* CONTEÚDO */}
       <main className="content">
         <h1>{modulo.titulo}</h1>
+
         {renderConteudo()}
 
         <div className="teoria-box">
           <h2>📘 Teoria / Anotações</h2>
-          <p>
-            {modulo.descricao || "Nenhuma teoria adicionada ainda."}
-          </p>
+          <p>{modulo.descricao || "Nenhuma teoria adicionada ainda."}</p>
         </div>
 
         {!completed ? (

@@ -98,7 +98,14 @@ function HomePage() {
       {user && (
         <div className="nav-container">
           <span>{user.nome.split(" ")[0]}</span> {/* Exibe o primeiro nome */}
-          <button onClick={logout} style={{ marginLeft: "10px" }}>Deslogar</button>
+          <button onClick={logout} className="logout-btn">
+  <img 
+    src="https://cdn-icons-png.flaticon.com/512/1828/1828479.png"
+    className="logout-icon"
+    alt="logout"
+  />
+  Sair
+</button>
         </div>
       )}
 
