@@ -70,7 +70,7 @@ function CriarCurso() {
           />
         </div>
         <div>
-          <label>Descrição do Curso</label>
+          <label>Fundamentação Teórica</label>
           <input
             type="text"
             value={descricao}
