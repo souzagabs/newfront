@@ -28,7 +28,6 @@ function ModuloCurso() {
 
         setModulo(m);
 
-        // Carrega progresso
         const progressoRes = await api.get(
           `/progresso/${cursoId}/${moduloId}`,
           { headers: { Authorization: `Bearer ${token}` } }
@@ -46,7 +45,6 @@ function ModuloCurso() {
     fetchData();
   }, [cursoId, moduloId]);
 
-  // Concluir módulo
   const handleComplete = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -65,7 +63,6 @@ function ModuloCurso() {
     }
   };
 
-  // ----- Renderiza conteúdo -----
   const renderConteudo = () => {
     const link = modulo.urlConteudo?.trim() || "";
     const tipo = modulo.tipoConteudo
@@ -140,7 +137,7 @@ function ModuloCurso() {
   return (
     <div style={styles.page}>
       
-      {/* SIDEBAR*/}
+      {/* SIDEBAR */}
       <aside style={styles.sidebar}>
         <h3 style={{ padding: "15px" }}>Módulos</h3>
         {modulosCurso.map((m) => (
@@ -159,11 +156,18 @@ function ModuloCurso() {
         ))}
       </aside>
 
-      {/*CONTEÚDO */}
+      {/* CONTEÚDO */}
       <main style={styles.content}>
         <h1>{modulo.titulo}</h1>
 
         {renderConteudo()}
+
+        <div style={styles.teoriaBox}>
+          <h2>📘 Teoria / Anotações</h2>
+          <p>
+            {modulo.descricao || "Nenhuma teoria adicionada ainda."}
+          </p>
+        </div>
 
         {!completed ? (
           <button style={styles.button} onClick={handleComplete}>
@@ -188,20 +192,30 @@ const styles = {
   page: {
     display: "flex",
     background: "#f4f4f4",
-    minHeight: "100vh", 
+    minHeight: "100vh",
   },
   sidebar: {
     width: "280px",
     background: "white",
     borderRight: "1px solid #ddd",
-    overflowY: "auto",     
-    maxHeight: "100vh"     
+    overflowY: "auto",
+    maxHeight: "100vh"
   },
   content: {
     flex: 1,
     padding: "25px",
     overflow: "visible",
   },
+
+  teoriaBox: {
+    marginTop: "30px",
+    background: "white",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+    lineHeight: 1.6
+  },
+
   button: {
     marginTop: "20px",
     padding: "12px 20px",
@@ -213,6 +227,5 @@ const styles = {
     fontSize: "16px"
   }
 };
-
 
 export default ModuloCurso;
