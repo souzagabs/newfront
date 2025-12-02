@@ -23,10 +23,9 @@
   color: #9B4DFF;
   font-family: 'Orbitron', sans-serif;
   margin-bottom: 24px;
-  text-align: center; /* CENTRALIZA TíTULO */
+  text-align: center; 
 }
 
-/* Formulário CENTRALIZADO */
 .criar-curso-form {
   display: flex;
   flex-direction: column;
@@ -93,13 +92,12 @@
   transform: scale(1.05);
 }
 
-/* ERRO */
+
 .error-text {
   color: #FF4D6D;
   margin-bottom: 10px;
 }
 
-/* Modal Overlay */
 .modal-overlay-criar {
   background: rgba(0,0,0,0.65);
   position: fixed;
@@ -110,7 +108,7 @@
   z-index: 2000;
 }
 
-/* MODAL SEM BRILHO */
+
 .modal-criar {
   background: #121212;
   padding: 24px;
@@ -128,7 +126,7 @@
 
   margin-left: auto;
   margin-right: auto;
-  text-align: center; /* CENTRALIZA CONTEÚDO INTERNO */
+  text-align: center; 
 }
 
 .modal-title {

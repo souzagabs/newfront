@@ -9,6 +9,7 @@ import CursoDetalhes from './pages/CursoDetalhes';
 import ModuloCurso from './pages/ModuloCurso';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import PoliticaDireitosAutorais from './pages/PoliticaDireitosAutorais';
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/registrar" element={<Register />} />
-
+        <Route path="/politica-de-direitos-autorais" element={<PoliticaDireitosAutorais />} />
         <Route path="/criarcurso" element={<CreateCourse />} />
         <Route path="/meuscursos" element={<MeusCursos />} />
         <Route path="/curso/:cursoId" element={<CursoDetalhes />} />
