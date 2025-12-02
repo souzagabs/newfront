@@ -1,6 +1,7 @@
 import { useState } from "react";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import "../styles/Register.css"; 
 
 function Register() {
   const [name, setName] = useState("");
@@ -25,7 +26,6 @@ function Register() {
         setError("Erro ao registrar usuário.");
       }
     } catch (err) {
-        
       setError("Erro ao registrar usuário.");
       console.error("Erro ao registrar usuário", err);
     }
@@ -36,7 +36,7 @@ function Register() {
       <h1>Registrar</h1>
       {error && <p className="error">{error}</p>}
       <form onSubmit={handleRegister}>
-        <div>
+        <div className="input-group">
           <label>Nome</label>
           <input
             type="text"
@@ -45,7 +45,7 @@ function Register() {
             required
           />
         </div>
-        <div>
+        <div className="input-group">
           <label>Email</label>
           <input
             type="email"
@@ -54,7 +54,7 @@ function Register() {
             required
           />
         </div>
-        <div>
+        <div className="input-group">
           <label>Senha</label>
           <input
             type="password"
@@ -63,8 +63,12 @@ function Register() {
             required
           />
         </div>
-        <button type="submit">Registrar</button>
+        <button type="submit" className="register-btn">Registrar</button>
       </form>
+
+      <div className="login-link">
+        <p>Já tem uma conta? <button onClick={() => navigate("/login")}>Faça login</button></p>
+      </div>
     </div>
   );
 }

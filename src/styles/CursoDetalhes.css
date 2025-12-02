@@ -1,0 +1,144 @@
+.curso-detalhes {
+  background: #121212;
+  color: white;
+  font-family: 'Exo', sans-serif;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.curso-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #1f1f1f;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 600px;
+}
+
+.curso-header h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3.5rem;
+  color: #9B4DFF;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.curso-header .descricao {
+  font-size: 1.2rem;
+  color: #B0B0B0;
+  margin-bottom: 15px;
+}
+
+.curso-header p {
+  font-size: 1rem;
+  color: #FF1493;
+}
+
+/* Lista de Módulos */
+.modulos-container {
+  margin-top: 30px;
+  padding: 20px;
+  background: #1f1f1f;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.modulos-container h2 {
+  font-size: 2.2rem;
+  color: #FF1493;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.modulo-item {
+  font-size: 1.1rem;
+  color: #B0B0B0;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.modulo-item:hover {
+  background-color: #2a2a2a;
+  transform: scale(1.05);
+}
+
+/* Mensagens */
+.message {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #FF1493; /* Neon Rosa */
+  text-align: center;
+}
+
+/* Erro */
+.error {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Botão de Inscrição */
+.inscrever-btn {
+  margin-top: 30px;
+  padding: 15px 30px;
+  background: #673ab7;
+  color: white;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.inscrever-btn:hover {
+  background: #9B4DFF;
+  transform: scale(1.05);
+}
+
+.inscrever-btn:disabled {
+  background: #888;
+  cursor: not-allowed;
+}
+
+/* Efeito de Neon no Nome do Curso */
+.curso-header h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3.5rem;
+  color: #9B4DFF; /* Neon roxo */
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  text-align: center;
+  position: relative;
+  animation: neon-glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes neon-glow {
+  0% {
+    text-shadow: 0 0 5px #9B4DFF, 0 0 10px #9B4DFF, 0 0 20px #9B4DFF, 0 0 40px #9B4DFF, 0 0 80px #9B4DFF, 0 0 90px #9B4DFF, 0 0 100px #9B4DFF;
+  }
+  100% {
+    text-shadow: 0 0 5px #00BFFF, 0 0 10px #00BFFF, 0 0 20px #00BFFF, 0 0 40px #00BFFF, 0 0 80px #00BFFF, 0 0 90px #00BFFF, 0 0 100px #00BFFF;
+  }
+}
+
+.curso-header h1 {
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+}

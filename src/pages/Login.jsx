@@ -1,15 +1,16 @@
 import { useState } from "react";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import "../styles/Login.css";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState(""); 
   const [error, setError] = useState(""); 
-  const navigate = useNavigate(); // Para navegar após o login
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Evita que o formulário seja enviado e recarregue a página
+    e.preventDefault();
 
     try {
       const response = await api.post("/auth/login", { 
@@ -36,7 +37,7 @@ function Login() {
       <h1>Login</h1>
       {error && <p className="error">{error}</p>}
       <form onSubmit={handleLogin}>
-        <div>
+        <div className="input-group">
           <label>Email</label>
           <input
             type="email"
@@ -45,7 +46,7 @@ function Login() {
             required
           />
         </div>
-        <div>
+        <div className="input-group">
           <label>Senha</label>
           <input
             type="password"
@@ -54,7 +55,7 @@ function Login() {
             required
           />
         </div>
-        <button type="submit">Entrar</button>
+        <button type="submit" className="login-btn">Entrar</button>
       </form>
 
       <div className="register-link">

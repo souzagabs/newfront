@@ -1,0 +1,282 @@
+.meus-cursos-page {
+  font-family: 'Exo', sans-serif;
+}
+
+.meus-cursos-page {
+  padding: 32px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #121212, #1f1f1f, #2b2b2b);
+  background-size: 400% 400%;
+  animation: meusCursosGradient 10s ease infinite;
+  color: white;
+  overflow-x: hidden;
+}
+
+@keyframes meusCursosGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.meus-cursos-page .meus-cursos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.meus-cursos-page .meus-cursos-header h1 {
+  font-family: 'Orbitron', sans-serif;
+  color: #9B4DFF;
+  font-size: 2.6rem;
+  margin: 0;
+}
+
+.meus-cursos-page .section {
+  margin-bottom: 40px;
+}
+
+.meus-cursos-page .section-title {
+  font-family: 'Orbitron', sans-serif;
+  color: #FF1493;
+  font-size: 1.7rem;
+  margin-bottom: 16px;
+}
+
+.meus-cursos-page .cursos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.meus-cursos-page .curso-card {
+  background: #1f1f1f;
+  position: relative;
+  padding: 18px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.meus-cursos-page .curso-card::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  background: linear-gradient(45deg, #00BFFF, #9B4DFF);
+  border-radius: 12px;
+  z-index: -1;
+  opacity: 0.06;
+  transition: opacity 0.25s ease;
+}
+
+.meus-cursos-page .curso-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.45);
+}
+
+.meus-cursos-page .curso-card:hover::before {
+  opacity: 0.16;
+}
+
+.meus-cursos-page .curso-card-content {
+  cursor: pointer;
+}
+
+.meus-cursos-page .curso-title {
+  font-family: 'Orbitron', sans-serif;
+  color: #FF1493;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.meus-cursos-page .curso-desc {
+  color: #b0b0b0;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+.meus-cursos-page .curso-mods {
+  color: #8ea0b0;
+  font-size: 0.85rem;
+}
+
+.meus-cursos-page .primary-btn,
+.meus-cursos-page .secondary-btn,
+.meus-cursos-page .ghost-btn,
+.meus-cursos-page .danger-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  font-family: 'Exo', sans-serif;
+}
+
+.meus-cursos-page .primary-btn {
+  background: linear-gradient(90deg, #00BFFF, #9B4DFF);
+  color: white;
+}
+.meus-cursos-page .primary-btn:hover {
+  transform: scale(1.05);
+}
+
+.meus-cursos-page .secondary-btn {
+  background: #9B4DFF;
+  color: white;
+}
+.meus-cursos-page .secondary-btn:hover {
+  transform: scale(1.05);
+}
+
+.meus-cursos-page .ghost-btn {
+  background: transparent;
+  border: 1px solid rgba(0,191,255,0.2);
+  color: #00BFFF;
+}
+.meus-cursos-page .ghost-btn:hover {
+  background: rgba(0,191,255,0.05);
+  transform: scale(1.05);
+}
+
+.meus-cursos-page .danger-btn {
+  background: #FF4D6D;
+  color: white;
+}
+.meus-cursos-page .danger-btn:hover {
+  transform: scale(1.05);
+}
+
+.meus-cursos-page .muted {
+  color: #b0b0b0;
+  margin-top: 6px;
+}
+
+.meus-cursos-page .error-text {
+  color: #FF6B6B;
+}
+
+.meus-cursos-page .modal-fundo {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 2000;
+}
+
+.meus-cursos-page .modal {
+  background: #121212;
+  border-radius: 12px;
+  padding: 22px;
+  width: 100%;
+  max-width: 650px;
+  color: white;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid rgba(155,77,255,0.1);
+}
+
+.meus-cursos-page .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.meus-cursos-page .modal-header h3 {
+  font-family: 'Orbitron', sans-serif;
+  color: #9B4DFF;
+}
+
+.meus-cursos-page .close-btn {
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.meus-cursos-page .label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  color: #FF1493;
+}
+
+.meus-cursos-page .input,
+.meus-cursos-page .textarea {
+  width: 100%;
+  background: #1f1f1f;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 12px;
+  color: white;
+  outline: none;
+}
+
+.meus-cursos-page .input:focus,
+.meus-cursos-page .textarea:focus {
+  border-color: #9B4DFF;
+}
+
+.meus-cursos-page .modulos-list {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.meus-cursos-page .modulo-card {
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.meus-cursos-page .modulo-card-top {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding-bottom: 6px;
+}
+
+.meus-cursos-page .modulo-card-body {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.meus-cursos-page .modulo-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.meus-cursos-page .modal-controls {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.meus-cursos-page .modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .meus-cursos-page .cursos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .meus-cursos-page .meus-cursos-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import api from "../services/api";
+import "../styles/MeusCursos.css";
 
 function MeusCursos() {
   const [cursos, setCursos] = useState([]);
@@ -34,26 +36,25 @@ function MeusCursos() {
           const cursosData = response.data;
 
           if (decodedToken.role === "INSTRUTOR") {
-  // Cursos criados pelo instrutor
-  const cursosDoInstrutor = cursosData.filter(
-    (c) => c.instrutorId === decodedToken.id
-  );
-  const cursosUnicos = cursosDoInstrutor.filter(
-    (curso, index, self) =>
-      index === self.findIndex((c) => c.id === curso.id)
-  );
-  setCursosCriados(cursosUnicos);
+            // Cursos criados pelo instrutor
+            const cursosDoInstrutor = cursosData.filter(
+              (c) => c.instrutorId === decodedToken.id
+            );
+            const cursosUnicos = cursosDoInstrutor.filter(
+              (curso, index, self) =>
+                index === self.findIndex((c) => c.id === curso.id)
+            );
+            setCursosCriados(cursosUnicos);
 
-  // Cursos em que o instrutor está inscrito (não criados por ele)
-  const cursosInscritos = cursosData.filter(
-    (c) => c.instrutorId !== decodedToken.id
-  );
-  const cursosInscritosUnicos = cursosInscritos.filter(
-    (curso, index, self) =>
-      index === self.findIndex((c) => c.id === curso.id)
-  );
-  setCursos(cursosInscritosUnicos);
-
+            // Cursos em que o instrutor está inscrito (não criados por ele)
+            const cursosInscritos = cursosData.filter(
+              (c) => c.instrutorId !== decodedToken.id
+            );
+            const cursosInscritosUnicos = cursosInscritos.filter(
+              (curso, index, self) =>
+                index === self.findIndex((c) => c.id === curso.id)
+            );
+            setCursos(cursosInscritosUnicos);
           } else if (decodedToken.role === "ALUNO") {
             const cursosInscritos = cursosData.filter((c) =>
               c.inscricoes?.some((i) => i.userId === decodedToken.id)
@@ -84,44 +85,51 @@ function MeusCursos() {
   };
 
   const atualizarCurso = async () => {
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  try {
-    // Atualiza o curso (nome e descrição)
-    await api.put(`/cursos/${cursoEditando.id}`, {
-      nome: cursoEditando.nome,
-      descricao: cursoEditando.descricao
-    }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      // Atualiza o curso (nome e descrição)
+      await api.put(
+        `/cursos/${cursoEditando.id}`,
+        {
+          nome: cursoEditando.nome,
+          descricao: cursoEditando.descricao,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-    // Atualiza os módulos em lote
-    await api.put(`/modulos/lote/${cursoEditando.id}`, {
-      modulos: cursoEditando.modulos
-    }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+      // Atualiza os módulos em lote
+      await api.put(
+        `/modulos/lote/${cursoEditando.id}`,
+        {
+          modulos: cursoEditando.modulos,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-    // Atualiza localmente
-    setCursosCriados(prev =>
-      prev.map(c => c.id === cursoEditando.id ? cursoEditando : c)
-    );
+      // Atualiza localmente
+      setCursosCriados((prev) =>
+        prev.map((c) => (c.id === cursoEditando.id ? cursoEditando : c))
+      );
 
-    fecharModal();
-
-  } catch (err) {
-    console.error("Erro ao atualizar curso", err);
-    setError("Erro ao salvar o curso.");
-  }
-};
-
+      fecharModal();
+    } catch (err) {
+      console.error("Erro ao atualizar curso", err);
+      setError("Erro ao salvar o curso.");
+    }
+  };
 
   const handleAdicionarModulo = () => {
     const novo = {
       id: Date.now(),
       titulo: "",
       descricao: "",
-      videoUrl: ""
+      urlConteudo: "",
+      tipoConteudo: "video",
     };
 
     const modulosAtualizados = [...(cursoEditando.modulos || []), novo];
@@ -133,7 +141,7 @@ function MeusCursos() {
 
     setModulosAbertos((prev) => ({
       ...prev,
-      [novo.id]: true
+      [novo.id]: true,
     }));
   };
 
@@ -167,218 +175,228 @@ function MeusCursos() {
   };
 
   return (
-    <div>
-      <h1>Meus Cursos</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="meus-cursos-page">
+      <div className="meus-cursos-header">
+        <h1>Meus Cursos</h1>
+        {role === "INSTRUTOR" && (
+          <button className="primary-btn" onClick={() => navigate("/criarcurso")}>
+            Criar Curso
+          </button>
+        )}
+      </div>
 
-      {role === "INSTRUTOR" && (
-        <button onClick={() => navigate("/criarcurso")}>Criar Curso</button>
-      )}
+      {error && <p className="error-text">{error}</p>}
 
-      <h2>Cursos que você está inscrito</h2>
-      {cursos.length > 0 ? (
-        cursos.map((curso) => (
-          <div key={curso.id}>
-            <h3>{curso.nome}</h3>
-            <p>{curso.descricao}</p>
-            <p>Modulos: {curso.modulos ? curso.modulos.length : 0}</p>
-            
-            <button
-  onClick={async () => {
-    try {
-      const token = localStorage.getItem("token");
+      <section className="section">
+        <h2 className="section-title">Cursos que você está inscrito</h2>
 
-      // busca os módulos reais do curso
-      const res = await api.get(`/modulos/curso/${curso.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      // se o curso não tem módulos, manda pra página do curso
-      if (!res.data.length) {
-        return navigate(`/curso/${curso.id}`);
-      }
-
-      // pega o primeiro módulo real do banco
-      const primeiroModulo = res.data[0].id;
-
-      navigate(`/curso/${curso.id}/modulo/${primeiroModulo}`);
-    } catch (err) {
-      console.log("Erro ao carregar módulos:", err);
-      navigate(`/curso/${curso.id}`);
-    }
-  }}
->
-  Ir para o Módulo
-</button>
-          </div>
-        ))
-      ) : (
-        <p>Você ainda não está inscrito em nenhum curso.</p>
-      )}
-
-      {role === "INSTRUTOR" && (
-        <>
-          <h2>Cursos Criados por Você</h2>
-          {cursosCriados.length > 0 ? (
-            cursosCriados.map((curso) => (
-              <div key={curso.id}>
-                <h3>{curso.nome}</h3>
-                <p>{curso.descricao}</p>
-                <p>Modulos: {curso.modulos ? curso.modulos.length : 0}</p>
-                <button onClick={() => navigate(`/curso/${curso.id}`)}>
-                  Ver Curso
-                </button>
-                <button onClick={() => abrirModal(curso)}>Editar</button>
-                <button onClick={() => excluirCurso(curso.id)}>Excluir</button>
-              </div>
-            ))
-          ) : (
-            <p>Você ainda não criou nenhum curso.</p>
-          )}
-        </>
-      )}
-
-      {modalAberto && (
-        <div style={styles.fundo}>
-          <div style={styles.modal}>
-            <h2>Editar Curso</h2>
-
-            <label>Nome:</label>
-            <input
-              type="text"
-              value={cursoEditando.nome}
-              onChange={(e) =>
-                setCursoEditando({ ...cursoEditando, nome: e.target.value })
-              }
-            />
-
-            <label>Anotações</label>
-            <textarea
-              value={cursoEditando.descricao}
-              onChange={(e) =>
-                setCursoEditando({ ...cursoEditando, descricao: e.target.value })
-              }
-            />
-
-            <h3>Módulos</h3>
-
-            {(cursoEditando.modulos || []).map((m) => (
-              <div
-                key={m.id}
-                style={{
-                  border: "1px solid #ccc",
-                  padding: 10,
-                  borderRadius: 6,
-                  marginBottom: 10,
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => toggleModulo(m.id)}
+        {cursos.length > 0 ? (
+          <div className="cursos-grid">
+            <AnimatePresence>
+              {cursos.map((curso) => (
+                <motion.article
+                  layout
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  key={curso.id}
+                  className="curso-card"
                 >
-                  <strong>{m.titulo || "Módulo sem título"}</strong>
-                  <span>{modulosAbertos[m.id] ? "▲" : "▼"}</span>
-                </div>
+                  <div className="curso-card-content" onClick={() => navigate(`/curso/${curso.id}`)}>
+                    <h3 className="curso-title">{curso.nome}</h3>
+                    <p className="curso-desc">{curso.descricao}</p>
+                    <p className="curso-mods">Módulos: {curso.modulos ? curso.modulos.length : 0}</p>
+                  </div>
 
-                {modulosAbertos[m.id] && (
-                  <div
-                    style={{
-                      marginTop: 10,
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 6,
-                    }}
-                  >
-                    <label>Título do módulo:</label>
-                    <input
-                      value={m.titulo || ""}
-                      onChange={(e) => {
-                        const novos = cursoEditando.modulos.map((mod) =>
-                          mod.id === m.id
-                            ? { ...mod, titulo: e.target.value }
-                            : mod
-                        );
-                        setCursoEditando({
-                          ...cursoEditando,
-                          modulos: novos,
-                        });
+                  <div className="curso-card-actions">
+                    <button
+                      className="ghost-btn"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          const token = localStorage.getItem("token");
+                          const res = await api.get(`/modulos/curso/${curso.id}`, {
+                            headers: { Authorization: `Bearer ${token}` },
+                          });
+
+                          if (!res.data.length) {
+                            return navigate(`/curso/${curso.id}`);
+                          }
+
+                          const primeiroModulo = res.data[0].id;
+                          navigate(`/curso/${curso.id}/modulo/${primeiroModulo}`);
+                        } catch (err) {
+                          console.log("Erro ao carregar módulos:", err);
+                          navigate(`/curso/${curso.id}`);
+                        }
                       }}
-                    />
-
-
-                    <label>Link do vídeo (YouTube):</label>
-                    <input
-                    value={m.urlConteudo || ""}
-                    onChange={(e) => {
-                    const novos = cursoEditando.modulos.map((mod) =>
-                    mod.id === m.id
-                    ? {
-                     ...mod,
-                    urlConteudo: e.target.value,
-                    tipoConteudo: mod.tipoConteudo || "video", 
-                      }
-                    : mod
-                     );
-                    setCursoEditando({
-                    ...cursoEditando,
-                    modulos: novos,
-                    });
-                      }}
-                    />
-
-                    <button onClick={() => removerModulo(m.id)}>
-                      Excluir módulo
+                    >
+                      Ir para o módulo
                     </button>
                   </div>
-                )}
-              </div>
-            ))}
-
-            <button onClick={handleAdicionarModulo}>+ Adicionar módulo</button>
-
-            <div style={styles.actions}>
-              <button onClick={fecharModal}>Cancelar</button>
-              <button onClick={atualizarCurso}>Salvar</button>
-            </div>
+                </motion.article>
+              ))}
+            </AnimatePresence>
           </div>
-        </div>
+        ) : (
+          <p className="muted">Você ainda não está inscrito em nenhum curso.</p>
+        )}
+      </section>
+
+      {role === "INSTRUTOR" && (
+        <section className="section">
+          <h2 className="section-title">Cursos criados por você</h2>
+
+          {cursosCriados.length > 0 ? (
+            <div className="cursos-grid">
+              <AnimatePresence>
+                {cursosCriados.map((curso) => (
+                  <motion.article
+                    layout
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    key={curso.id}
+                    className="curso-card"
+                  >
+                    <div className="curso-card-content">
+                      <h3 className="curso-title">{curso.nome}</h3>
+                      <p className="curso-desc">{curso.descricao}</p>
+                      <p className="curso-mods">Módulos: {curso.modulos ? curso.modulos.length : 0}</p>
+                    </div>
+
+                    <div className="curso-card-actions">
+                      <button className="ghost-btn" onClick={() => navigate(`/curso/${curso.id}`)}>
+                        Ver Curso
+                      </button>
+                      <button className="secondary-btn" onClick={() => abrirModal(curso)}>
+                        Editar
+                      </button>
+                      <button
+                        className="danger-btn"
+                        onClick={() => {
+                          if (window.confirm("Confirma exclusão deste curso?")) excluirCurso(curso.id);
+                        }}
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </motion.article>
+                ))}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <p className="muted">Você ainda não criou nenhum curso.</p>
+          )}
+        </section>
       )}
+
+      {/* Modal de edição */}
+      <AnimatePresence>
+        {modalAberto && cursoEditando && (
+          <motion.div
+            className="modal-fundo"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="modal"
+              initial={{ scale: 0.98, y: 8, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.98, y: 8, opacity: 0 }}
+            >
+              <div className="modal-header">
+                <h3>Editar Curso</h3>
+                <button className="close-btn" onClick={fecharModal}>
+                  ×
+                </button>
+              </div>
+
+              <label className="label">Nome:</label>
+              <input
+                className="input"
+                type="text"
+                value={cursoEditando.nome}
+                onChange={(e) => setCursoEditando({ ...cursoEditando, nome: e.target.value })}
+              />
+
+              <label className="label">Anotações</label>
+              <textarea
+                className="textarea"
+                value={cursoEditando.descricao}
+                onChange={(e) => setCursoEditando({ ...cursoEditando, descricao: e.target.value })}
+              />
+
+              <h4 className="sub-title">Módulos</h4>
+
+              <div className="modulos-list">
+                {(cursoEditando.modulos || []).map((m) => (
+                  <div className="modulo-card" key={m.id}>
+                    <div className="modulo-card-top" onClick={() => toggleModulo(m.id)}>
+                      <strong>{m.titulo || "Módulo sem título"}</strong>
+                      <span className="toggle-icon">{modulosAbertos[m.id] ? "▲" : "▼"}</span>
+                    </div>
+
+                    {modulosAbertos[m.id] && (
+                      <div className="modulo-card-body">
+                        <label className="label">Título do módulo:</label>
+                        <input
+                          className="input"
+                          value={m.titulo || ""}
+                          onChange={(e) => {
+                            const novos = cursoEditando.modulos.map((mod) =>
+                              mod.id === m.id ? { ...mod, titulo: e.target.value } : mod
+                            );
+                            setCursoEditando({ ...cursoEditando, modulos: novos });
+                          }}
+                        />
+
+                        <label className="label">Link do vídeo (YouTube):</label>
+                        <input
+                          className="input"
+                          value={m.urlConteudo || ""}
+                          onChange={(e) => {
+                            const novos = cursoEditando.modulos.map((mod) =>
+                              mod.id === m.id
+                                ? { ...mod, urlConteudo: e.target.value, tipoConteudo: mod.tipoConteudo || "video" }
+                                : mod
+                            );
+                            setCursoEditando({ ...cursoEditando, modulos: novos });
+                          }}
+                        />
+
+                        <div className="modulo-actions">
+                          <button className="danger-btn" onClick={() => removerModulo(m.id)}>
+                            Excluir módulo
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="modal-controls">
+                <button className="ghost-btn" onClick={handleAdicionarModulo}>
+                  + Adicionar módulo
+                </button>
+
+                <div className="modal-actions">
+                  <button className="ghost-btn" onClick={fecharModal}>
+                    Cancelar
+                  </button>
+                  <button className="primary-btn" onClick={atualizarCurso}>
+                    Salvar
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
-
-const styles = {
-  fundo: {
-    position: "fixed",
-    left: 0,
-    top: 0,
-    width: "100vw",
-    height: "100vh",
-    background: "rgba(0,0,0,0.5)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  modal: {
-    background: "#fff",
-    padding: 20,
-    width: 480,
-    maxHeight: "90vh",
-    overflowY: "auto",
-    borderRadius: 8,
-    display: "flex",
-    flexDirection: "column",
-    gap: 10,
-  },
-  actions: {
-    marginTop: 20,
-    display: "flex",
-    justifyContent: "space-between",
-  },
-};
 
 export default MeusCursos;
