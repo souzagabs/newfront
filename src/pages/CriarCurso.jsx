@@ -3,7 +3,6 @@ import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 
-// Modal para criar módulo
 function CriarCurso() {
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");

@@ -84,22 +84,37 @@ function MeusCursos() {
   };
 
   const atualizarCurso = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      await api.put(`/cursos/${cursoEditando.id}`, cursoEditando, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  const token = localStorage.getItem("token");
 
-      setCursosCriados((prev) =>
-        prev.map((c) => (c.id === cursoEditando.id ? cursoEditando : c))
-      );
+  try {
+    // Atualiza o curso (nome e descrição)
+    await api.put(`/cursos/${cursoEditando.id}`, {
+      nome: cursoEditando.nome,
+      descricao: cursoEditando.descricao
+    }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-      fecharModal();
-    } catch (err) {
-      console.error("Erro ao atualizar curso", err);
-      setError("Erro ao salvar o curso.");
-    }
-  };
+    // Atualiza os módulos em lote
+    await api.put(`/modulos/lote/${cursoEditando.id}`, {
+      modulos: cursoEditando.modulos
+    }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // Atualiza localmente
+    setCursosCriados(prev =>
+      prev.map(c => c.id === cursoEditando.id ? cursoEditando : c)
+    );
+
+    fecharModal();
+
+  } catch (err) {
+    console.error("Erro ao atualizar curso", err);
+    setError("Erro ao salvar o curso.");
+  }
+};
+
 
   const handleAdicionarModulo = () => {
     const novo = {
@@ -167,9 +182,34 @@ function MeusCursos() {
             <h3>{curso.nome}</h3>
             <p>{curso.descricao}</p>
             <p>Modulos: {curso.modulos ? curso.modulos.length : 0}</p>
-            <button onClick={() => navigate(`/curso/${curso.id}/modulo/1`)}>
-              Ir para o Módulo
-            </button>
+            
+            <button
+  onClick={async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      // busca os módulos reais do curso
+      const res = await api.get(`/modulos/curso/${curso.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // se o curso não tem módulos, manda pra página do curso
+      if (!res.data.length) {
+        return navigate(`/curso/${curso.id}`);
+      }
+
+      // pega o primeiro módulo real do banco
+      const primeiroModulo = res.data[0].id;
+
+      navigate(`/curso/${curso.id}/modulo/${primeiroModulo}`);
+    } catch (err) {
+      console.log("Erro ao carregar módulos:", err);
+      navigate(`/curso/${curso.id}`);
+    }
+  }}
+>
+  Ir para o Módulo
+</button>
           </div>
         ))
       ) : (
@@ -272,18 +312,16 @@ function MeusCursos() {
 
                     <label>Link do vídeo (YouTube):</label>
                     <input
-                      value={m.videoUrl || ""}
+                      value={m.urlConteudo || ""}
                       onChange={(e) => {
-                        const novos = cursoEditando.modulos.map((mod) =>
-                          mod.id === m.id
-                            ? { ...mod, videoUrl: e.target.value }
-                            : mod
-                        );
-                        setCursoEditando({
-                          ...cursoEditando,
-                          modulos: novos,
-                        });
-                      }}
+                      const novos = cursoEditando.modulos.map((mod) =>
+                      mod.id === m.id
+                      ? { ...mod, urlConteudo: e.target.value }
+                      : mod
+                      );
+                     setCursoEditando({ ...cursoEditando, modulos: novos });
+                    }}
+
                     />
 
                     <button onClick={() => removerModulo(m.id)}>
