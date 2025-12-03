@@ -106,7 +106,7 @@ function CriarCurso() {
           required
         />
 
-        <label>Anotações/Conteúdo complementar</label>
+        <label>Descrição/Anotações/Conteúdo complementar</label>
         <textarea
           value={descricao}
           onChange={(e) => setDescricao(e.target.value)}
