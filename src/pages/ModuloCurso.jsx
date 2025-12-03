@@ -163,8 +163,8 @@ function ModuloCurso() {
         {renderConteudo()}
 
         <div className="teoria-box">
-          <h2>📘 Teoria / Anotações</h2>
-          <p>{modulo.descricao || "Nenhuma teoria adicionada ainda."}</p>
+          <h2>📘 Conteúdo complementar / Anotações</h2>
+          <p>{modulo.descricao || "Nenhum contéudo complementar adicionado ainda."}</p>
         </div>
 
         {!completed ? (

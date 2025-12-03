@@ -1,4 +1,5 @@
 import "../styles/Footer.css";
+import { Link } from "react-router-dom";
 
 function Footer() {
   return (
@@ -32,7 +33,7 @@ function Footer() {
         <p>
           A NeoAcademy não hospeda nem distribui conteúdo de terceiros.  
           Materiais dos cursos são responsabilidade exclusiva de seus instrutores.  
-          Consulte nossa <a href="/politica-de-direitos-autorais">Política de Direitos Autorais</a>.
+          Consulte nossa <Link to="/politica-de-direitos-autorais">Política de Direitos Autorais</Link>
         </p>
       </div>
 
