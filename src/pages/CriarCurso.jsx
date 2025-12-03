@@ -106,7 +106,7 @@ function CriarCurso() {
           required
         />
 
-        <label>Anotações</label>
+        <label>Anotações/Conteúdo complementar</label>
         <textarea
           value={descricao}
           onChange={(e) => setDescricao(e.target.value)}
@@ -171,9 +171,10 @@ function CriarCurso() {
               </div>
 
               <button
-                className="secondary-btn close-modal-btn"
-                onClick={handleFinalizar}
-              >
+            type="button"
+              className="secondary-btn close-modal-btn"
+            onClick={handleFinalizar}
+               >
                 Finalizar
               </button>
             </motion.div>
