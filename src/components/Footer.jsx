@@ -17,7 +17,7 @@ function Footer() {
         <div className="footer-section">
           <h3>Links Rápidos</h3>
           <ul>
-            <li><Link to href="/home">Home</Link></li>
+            <li><Link to="/home">Home</Link></li>
             <li><Link to="/meuscursos">Meus Cursos</Link></li>
           </ul>
         </div>
