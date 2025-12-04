@@ -139,3 +139,52 @@
   letter-spacing: 2px;
   text-align: center;
 }
+
+.curso-header h1 {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+}
+
+.curso-header .descricao {
+  font-size: clamp(1rem, 3.5vw, 1.2rem);
+}
+
+.curso-header p {
+  font-size: clamp(0.9rem, 3vw, 1rem);
+}
+
+.modulos-container h2 {
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+}
+
+.modulo-item {
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
+  padding: clamp(10px, 3vw, 12px);
+}
+
+.inscrever-btn {
+  font-size: clamp(1rem, 3.5vw, 1.2rem);
+  padding: clamp(12px, 3vw, 15px) clamp(20px, 4vw, 30px);
+}
+
+.curso-header,
+.modulos-container {
+  width: 100%;
+  max-width: 600px;
+  padding: clamp(16px, 4vw, 20px);
+}
+
+@media (max-width: 420px) {
+
+  .curso-detalhes {
+    padding: 10px;
+  }
+
+  .curso-header h1 {
+    line-height: 1.2;
+  }
+
+  .modulos-container h2 {
+    margin-bottom: 10px;
+  }
+}
+
